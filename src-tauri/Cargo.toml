@@ -1,7 +1,7 @@
 [package]
-name = "emblem-vectorizer"
+name = "blason"
 version = "0.1.0"
-description = "Convertit un emblème sur fond blanc en SVG détouré"
+description = "Blason, convertit un emblème sur fond blanc en SVG détouré"
 edition = "2021"
 rust-version = "1.77"
 

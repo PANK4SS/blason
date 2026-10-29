@@ -24,7 +24,7 @@ export default function App() {
       <header className="app-head">
         <img className="app-logo" src="/logo.svg" alt="" width={52} height={52} />
         <div>
-          <h1>Emblem Vectorizer</h1>
+          <h1>Blason</h1>
           <p className="lede">
             Transforme un emblème en image matricielle en SVG vectoriel, sans son fond.
           </p>

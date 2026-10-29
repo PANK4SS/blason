@@ -61,7 +61,7 @@ Pour ne produire qu'un format : `npm run tauri build -- --bundles deb`.
 Apple Silicon et macOS Intel. Les tests tournent avant chaque compilation.
 
 ```bash
-git remote add origin git@github.com:<compte>/emblem-vectorizer.git
+git remote add origin git@github.com:<compte>/blason.git
 git push -u origin main
 git tag v0.1.0 && git push origin v0.1.0
 ```

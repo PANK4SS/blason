@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Emblem Vectorizer",
+  "productName": "Blason",
   "version": "0.1.0",
-  "identifier": "com.emblem.vectorizer",
+  "identifier": "com.blason.desktop",
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Emblem Vectorizer",
+        "title": "Blason",
         "width": 620,
         "height": 620,
         "minWidth": 400,
@@ -41,7 +41,7 @@
     ],
     "category": "Graphics and Design",
     "shortDescription": "Emblème vers SVG détouré",
-    "longDescription": "Convertit un emblème posé sur fond blanc en SVG vectoriel sans fond, entièrement sur la machine.",
+    "longDescription": "Blason convertit un emblème posé sur fond blanc en SVG vectoriel sans fond, entièrement sur la machine.",
     "icon": [
       "icons/32x32.png",
       "icons/64x64.png",

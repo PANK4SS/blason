@@ -65,7 +65,7 @@ jobs:
         with:
           args: ${{ matrix.cible && format('--target {0}', matrix.cible) || '' }}
           tagName: ${{ github.ref_type == 'tag' && github.ref_name || 'brouillon' }}
-          releaseName: 'Emblem Vectorizer ${{ github.ref_name }}'
+          releaseName: 'Blason ${{ github.ref_name }}'
           releaseBody: 'Paquets Linux, Windows et macOS produits automatiquement.'
           releaseDraft: true
 

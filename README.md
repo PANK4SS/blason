@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="docs/images/logo.png" width="132" alt="Emblem Vectorizer">
+<img src="docs/images/logo.png" width="132" alt="Blason">
 
-# Emblem Vectorizer
+# Blason
 
 <p><strong>Un emblème posé sur fond blanc, un SVG détouré, prêt à l'emploi.</strong></p>
 <p>Tout le calcul se fait sur votre machine. Aucune image n'est envoyée sur un serveur.</p>
@@ -32,7 +32,7 @@ Un logo scanné, exporté d'une planche ou récupéré en PNG reste une image ma
 il bave dès qu'on l'agrandit, et son fond blanc se voit sur toute surface qui ne l'est
 pas. Le redessiner à la main dans un éditeur vectoriel prend une heure par emblème.
 
-Emblem Vectorizer fait ce passage automatiquement. Vous déposez des PNG, WebP ou JPEG,
+Blason fait ce passage automatiquement. Vous déposez des PNG, WebP ou JPEG,
 il en sort des SVG qui ne contiennent qu'un tracé rempli, sans fond : ils se posent sur
 n'importe quelle couleur, s'impriment à n'importe quelle taille et pèsent quelques
 kilo-octets.

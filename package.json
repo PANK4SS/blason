@@ -1,9 +1,9 @@
 {
-  "name": "emblem-vectorizer",
+  "name": "blason",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Convertit un emblème raster sur fond blanc en SVG vectoriel sans fond",
+  "description": "Blason, convertit un emblème sur fond blanc en SVG détouré",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
