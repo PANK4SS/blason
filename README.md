@@ -135,8 +135,8 @@ système qu'il vise, d'où le workflow GitHub Actions qui compile sur quatre mac
 
 | Système | Formats | Taille |
 | --- | --- | --- |
-| Linux | `.deb`, `.AppImage` | 1,6 Mo et 78 Mo |
-| Windows | `.exe` (NSIS), `.msi` | environ 3 Mo |
+| Linux | `.deb`, `.AppImage` | 1,7 Mo et 80 Mo |
+| Windows | `.exe` (NSIS), `.msi` | 1,4 Mo |
 | macOS | `.app`, `.dmg` | environ 10 Mo |
 
 La fenêtre s'ouvre centrée, petite et carrée : 620 par 620, redimensionnable, rien à
