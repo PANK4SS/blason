@@ -14,11 +14,15 @@
       {
         "label": "main",
         "title": "Emblem Vectorizer",
-        "width": 1100,
-        "height": 840,
-        "minWidth": 420,
-        "minHeight": 540,
-        "dragDropEnabled": false
+        "width": 620,
+        "height": 620,
+        "minWidth": 400,
+        "minHeight": 460,
+        "dragDropEnabled": false,
+        "center": true,
+        "resizable": true,
+        "maximizable": false,
+        "theme": "Light"
       }
     ],
     "security": {
