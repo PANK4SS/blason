@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Auto-test</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 24px;
+        background: #fff;
+        color: #16181c;
+        font: 15px system-ui, sans-serif;
+      }
+      #status {
+        font-size: 20px;
+        font-weight: 600;
+        padding: 8px 12px;
+        border-radius: 8px;
+        display: inline-block;
+      }
+      .pass { background: #e6f5e9; color: #14532d; }
+      .fail { background: #fcecec; color: #8e1f1f; }
+      pre { font-size: 13px; }
+      .row { display: flex; gap: 24px; align-items: flex-start; margin-top: 16px; }
+      .row img { width: 220px; border: 1px solid #ddd; }
+    </style>
+  </head>
+  <body>
+    <p id="status">Test en cours…</p>
+    <pre id="log"></pre>
+    <div class="row">
+      <figure><figcaption>Source</figcaption><img id="source" alt="" /></figure>
+      <figure><figcaption>SVG</figcaption><img id="result" alt="" /></figure>
+    </div>
+    <script type="module">
+      /**
+       * Vérifie dans un vrai navigateur la chaîne complète : fabrication d'un
+       * PNG, décodage par la plateforme, transfert au worker, vectorisation,
+       * rendu du SVG obtenu. Lancer avec `npm run dev` puis /dev/selftest.html.
+       */
+      import { decodeImage } from '/src/platform/decodeImage.ts';
+      import { VectorizerClient } from '/src/platform/vectorizerClient.ts';
+      import { DEFAULT_OPTIONS } from '/src/core/types.ts';
+
+      const log = (line) => {
+        document.getElementById('log').textContent += `${line}\n`;
+        console.log(`[selftest] ${line}`);
+      };
+      const checks = [];
+      window.addEventListener('error', (event) => log(`erreur page : ${event.message}`));
+      window.addEventListener('unhandledrejection', (event) => log(`promesse rejetée : ${event.reason}`));
+      const check = (name, condition) => {
+        checks.push({ name, ok: Boolean(condition) });
+        log(`${condition ? 'ok  ' : 'ÉCHEC'} ${name}`);
+      };
+
+      async function buildFile() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 300;
+        canvas.height = 300;
+        const context = canvas.getContext('2d');
+        context.fillStyle = '#ffffff';
+        context.fillRect(0, 0, 300, 300);
+        context.fillStyle = '#c42b1c';
+        context.beginPath();
+        context.arc(150, 150, 110, 0, Math.PI * 2);
+        context.fill();
+        context.fillStyle = '#ffffff';
+        context.beginPath();
+        context.arc(150, 150, 60, 0, Math.PI * 2);
+        context.fill();
+        context.fillStyle = '#c42b1c';
+        context.fillRect(135, 40, 30, 220);
+
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+        document.getElementById('source').src = URL.createObjectURL(blob);
+        return new File([blob], 'embleme-test.png', { type: 'image/png' });
+      }
+
+      try {
+        log('demarrage');
+        const file = await buildFile();
+        log('png fabrique');
+        const image = await decodeImage(file);
+        check('image décodée en 300x300', image.width === 300 && image.height === 300);
+
+        const client = new VectorizerClient();
+        log('client cree');
+        await client.load('test', image, 'embleme-test');
+        check('pixels transférés au worker', image.data.byteLength === 0);
+
+        const started = performance.now();
+        const { result } = await client.run('test', DEFAULT_OPTIONS);
+        log(`vectorisation en ${Math.round(performance.now() - started)} ms`);
+
+        check('au moins deux tracés (anneau + trou)', result.pathCount >= 2);
+        check('aucune coordonnée invalide', !/NaN|Infinity/.test(result.svg));
+        check('couleur proche du rouge source', result.color.startsWith('#C'));
+        check('aucun fond dans le SVG', !/<rect|<svg[^>]+style/.test(result.svg));
+        check('réglage rejoué sans erreur', (await client.run('test', { ...DEFAULT_OPTIONS, threshold: 90 })).result.pathCount >= 1);
+
+        const rendered = `data:image/svg+xml;utf8,${encodeURIComponent(result.svg)}`;
+        const image2 = document.getElementById('result');
+        await new Promise((resolve, reject) => {
+          image2.onload = resolve;
+          image2.onerror = () => reject(new Error('SVG illisible par le navigateur'));
+          image2.src = rendered;
+        });
+        check('SVG affichable par le navigateur', image2.naturalWidth > 0);
+        client.dispose();
+      } catch (error) {
+        check(`exception : ${error.message}`, false);
+      }
+
+      // Permet de lancer ce test sans interface : ?report=<url> renvoie le
+      // bilan en JSON (utilisé par le script de vérification headless).
+      const report = new URLSearchParams(location.search).get('report');
+      if (report) {
+        navigator.sendBeacon(report, JSON.stringify({ checks, log: document.getElementById('log').textContent }));
+      }
+
+      const failed = checks.filter((c) => !c.ok);
+      const status = document.getElementById('status');
+      status.textContent = failed.length === 0 ? `AUTO-TEST OK (${checks.length})` : `AUTO-TEST ÉCHEC (${failed.length})`;
+      status.className = failed.length === 0 ? 'pass' : 'fail';
+      document.title = status.textContent;
+    </script>
+  </body>
+</html>
