@@ -31,19 +31,21 @@ export default function App() {
         </div>
       </header>
 
-      <section className="requirements" aria-label="Conditions pour un bon résultat">
-        <h2>Pour que ça marche</h2>
-        <ol>
-          <li>
-            L'emblème doit être sur un <strong>fond parfaitement blanc</strong>, sans ombre ni
-            dégradé.
-          </li>
-          <li>
-            Sa couleur doit être <strong>franche et bien visible</strong> : ce qui est presque blanc
-            est pris pour du fond.
-          </li>
-        </ol>
-      </section>
+      {jobs.length === 0 && (
+        <section className="requirements" aria-label="Conditions pour un bon résultat">
+          <h2>Pour que ça marche</h2>
+          <ol>
+            <li>
+              L'emblème doit être sur un <strong>fond parfaitement blanc</strong>, sans ombre ni
+              dégradé.
+            </li>
+            <li>
+              Sa couleur doit être <strong>franche et bien visible</strong> : ce qui est presque
+              blanc est pris pour du fond.
+            </li>
+          </ol>
+        </section>
+      )}
 
       <Dropzone onFiles={(files) => void addFiles(files)} compact={jobs.length > 0} />
 
