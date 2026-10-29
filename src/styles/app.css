@@ -430,8 +430,15 @@ input[type='color'] {
  */
 @media (max-width: 680px) {
   .app {
-    padding: var(--space-5) var(--space-4) var(--space-4);
-    gap: var(--space-4);
+    padding: var(--space-4);
+    gap: var(--space-3);
+  }
+
+  /* Dans une fenêtre de la taille d'une carte postale, le titre et la zone de
+     dépôt disent déjà ce que fait le logiciel. */
+  .lede,
+  .dropzone[data-compact='true'] .dropzone-hint {
+    display: none;
   }
 
   .app-head {
@@ -481,11 +488,12 @@ input[type='color'] {
   }
 
   .preview {
-    min-height: 150px;
+    min-height: 104px;
+    padding: var(--space-2);
   }
 
   .preview-image {
-    max-height: 170px;
+    max-height: 116px;
   }
 
   .grid {
