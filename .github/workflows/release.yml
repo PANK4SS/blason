@@ -1,0 +1,83 @@
+name: Paquets bureau
+
+# Produit les paquets des trois systèmes. Un paquet ne peut être fabriqué que
+# sur le système qu'il vise : c'est la raison d'être de cette matrice.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  paquets:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            cible: ''
+            nom: Linux (.deb et .AppImage)
+          - os: windows-latest
+            cible: ''
+            nom: Windows (.exe et .msi)
+          - os: macos-latest
+            cible: aarch64-apple-darwin
+            nom: macOS Apple Silicon (.dmg)
+          - os: macos-13
+            cible: x86_64-apple-darwin
+            nom: macOS Intel (.dmg)
+
+    name: ${{ matrix.nom }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Dépendances système Linux
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev \
+            librsvg2-dev patchelf libxdo-dev build-essential file
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.cible }}
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: ./src-tauri -> target
+
+      - run: npm ci
+
+      - name: Tests du cœur de traitement
+        run: npm test
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: ${{ matrix.cible && format('--target {0}', matrix.cible) || '' }}
+          tagName: ${{ github.ref_type == 'tag' && github.ref_name || 'brouillon' }}
+          releaseName: 'Emblem Vectorizer ${{ github.ref_name }}'
+          releaseBody: 'Paquets Linux, Windows et macOS produits automatiquement.'
+          releaseDraft: true
+
+      - name: Conserver les paquets comme artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: paquets-${{ matrix.os }}${{ matrix.cible && '-' }}${{ matrix.cible }}
+          if-no-files-found: ignore
+          path: |
+            src-tauri/target/release/bundle/**/*.deb
+            src-tauri/target/release/bundle/**/*.AppImage
+            src-tauri/target/release/bundle/**/*.dmg
+            src-tauri/target/**/release/bundle/**/*.dmg
+            src-tauri/target/release/bundle/**/*.exe
+            src-tauri/target/release/bundle/**/*.msi
