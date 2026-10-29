@@ -139,6 +139,11 @@ système qu'il vise, d'où le workflow GitHub Actions qui compile sur quatre mac
 | Windows | `.exe` (NSIS), `.msi` | environ 3 Mo |
 | macOS | `.app`, `.dmg` | environ 10 Mo |
 
+La fenêtre s'ouvre centrée, petite et carrée : 620 par 620, redimensionnable, rien à
+faire défiler pour atteindre le bouton de téléchargement.
+
+<img src="docs/images/fenetre-bureau.png" width="420" alt="La fenêtre du logiciel de bureau">
+
 Prérequis, compilation locale, compilation croisée et signature :
 [`docs/desktop.md`](docs/desktop.md).
 
@@ -151,14 +156,16 @@ blanc aux yeux évidés sur un carré arrondi en dégradé d'orange chaleureux. 
 d'icône d'application, de favicon et de marque dans l'en-tête, et c'est la source de
 toutes les icônes de plateforme.
 
-Toute la couleur de l'interface tient dans des variables CSS en haut de
-`src/styles/app.css`, en clair comme en sombre.
+L'interface est en mode clair uniquement, sur fond blanc. Toute sa couleur tient dans
+une dizaine de variables CSS en haut de `src/styles/app.css`.
 
-| Usage | Clair | Sombre |
-| --- | --- | --- |
-| Accent | `#C2410C` | `#FF8A3D` |
-| Fond | `#FAF6F2` | `#171310` |
-| Dégradé du logo | `#FFB45E` vers `#F97E22` vers `#D2400A` | identique |
+| Usage | Valeur |
+| --- | --- |
+| Fond de page | `#FFFFFF` |
+| Panneaux et cartes | `#FBF8F5` |
+| Accent, boutons, focus | `#C2410C` |
+| Texte | `#1C1714`, et `#6B5F56` en atténué |
+| Dégradé du logo | `#FFB45E` vers `#F97E22` vers `#D2400A` |
 
 ## Structure
 

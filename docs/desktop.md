@@ -114,6 +114,17 @@ Les paquets ne sont pas signés. En l'état :
 
 C'est un choix à faire au moment de distribuer, pas un défaut de configuration.
 
+## La fenêtre
+
+Le logiciel fait une chose en quelques secondes : la fenêtre s'ouvre centrée, en 620
+par 620, sans bouton d'agrandissement, et ne descend pas sous 400 par 460. En dessous
+de 680 pixels de large, la mise en page se resserre et le rappel des deux conditions
+s'efface dès qu'une image est chargée, pour que l'aperçu, les chiffres et le bouton de
+téléchargement tiennent ensemble sans défilement.
+
+Ces valeurs sont dans `src-tauri/tauri.conf.json`, section `app.windows`. Pour que la
+fenêtre reste au-dessus des autres, ajoutez-y `"alwaysOnTop": true`.
+
 ## Ce que la coque fait, et ne fait pas
 
 La vectorisation tourne dans la webview, avec exactement le même code TypeScript que la
