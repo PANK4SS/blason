@@ -1,0 +1,32 @@
+{
+  "name": "emblem-vectorizer",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Convertit un emblème raster sur fond blanc en SVG vectoriel sans fond",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run typecheck && npm run build:core && node --test tests/*.test.mjs",
+    "tauri": "tauri",
+    "build:core": "esbuild src/core/index.ts --bundle --format=esm --outfile=dist-test/core.mjs --log-level=warning",
+    "vectorize": "npm run build:core && node scripts/vectorize-file.mjs"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@tauri-apps/api": "^2.1.1",
+    "@tauri-apps/cli": "^2.1.0",
+    "@tauri-apps/plugin-dialog": "^2.0.1",
+    "@tauri-apps/plugin-fs": "^2.0.3",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}
