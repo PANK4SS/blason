@@ -254,7 +254,7 @@ input[type='range'] {
   background-color: var(--surface-sunken);
 }
 
-/* Damier : montre que le SVG n'a aucun fond. */
+/* Checkerboard: shows that the SVG has no background at all. */
 .preview[data-view='svg'] {
   background-image:
     linear-gradient(45deg, var(--checker) 25%, transparent 25% 75%, var(--checker) 75%),
@@ -424,9 +424,9 @@ input[type='color'] {
 }
 
 /*
- * La fenêtre du logiciel de bureau est un petit carré : au-delà d'une certaine
- * étroitesse, tout se resserre pour qu'une image et ses chiffres tiennent sans
- * faire défiler trois écrans.
+ * The desktop window is a small square. Past a certain narrowness everything
+ * tightens up so an image and its numbers fit without scrolling through three
+ * screens.
  */
 @media (max-width: 680px) {
   .app {
@@ -434,8 +434,8 @@ input[type='color'] {
     gap: var(--space-3);
   }
 
-  /* Dans une fenêtre de la taille d'une carte postale, le titre et la zone de
-     dépôt disent déjà ce que fait le logiciel. */
+  /* In a window the size of a postcard, the title and the drop zone already
+     say what the app does. */
   .lede,
   .dropzone[data-compact='true'] .dropzone-hint {
     display: none;

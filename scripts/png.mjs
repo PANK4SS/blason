@@ -3,12 +3,12 @@ import { inflateSync } from 'node:zlib';
 const CHANNELS = { 0: 1, 2: 3, 3: 1, 4: 2, 6: 4 };
 
 /**
- * Décodeur PNG minimal (8 bits par canal, non entrelacé) renvoyant du RGBA.
- * Il n'existe que pour les scripts Node : dans le navigateur, le décodage est
- * fait par la plateforme (`createImageBitmap`).
+ * Minimal PNG decoder (8 bits per channel, non-interlaced) returning RGBA.
+ * It exists only for the Node scripts: in the browser, decoding is done by the
+ * platform (`createImageBitmap`).
  */
 export function decodePng(buffer) {
-  if (buffer.readUInt32BE(0) !== 0x89504e47) throw new Error('Ce fichier n’est pas un PNG');
+  if (buffer.readUInt32BE(0) !== 0x89504e47) throw new Error('This file is not a PNG');
 
   let offset = 8;
   let header = null;
@@ -36,12 +36,12 @@ export function decodePng(buffer) {
     else if (type === 'IEND') break;
   }
 
-  if (!header) throw new Error('PNG sans en-tête IHDR');
-  if (header.bitDepth !== 8) throw new Error(`Profondeur ${header.bitDepth} bits non gérée`);
-  if (header.interlace !== 0) throw new Error('PNG entrelacé non géré');
+  if (!header) throw new Error('PNG without an IHDR header');
+  if (header.bitDepth !== 8) throw new Error(`Unsupported bit depth: ${header.bitDepth}`);
+  if (header.interlace !== 0) throw new Error('Interlaced PNG is not supported');
 
   const channels = CHANNELS[header.colorType];
-  if (!channels) throw new Error(`Type de couleur ${header.colorType} non géré`);
+  if (!channels) throw new Error(`Unsupported color type: ${header.colorType}`);
 
   const raw = inflateSync(Buffer.concat(chunks));
   const { width, height } = header;
