@@ -1,25 +1,25 @@
-# Script d'origine
+# The original script
 
-`vectorize_emblems.py` est le script qui a lancé ce projet. Il découpait une planche
-précise de quatorze emblèmes, à des coordonnées écrites en dur, et écrivait un SVG par
-emblème sous des noms eux aussi figés dans le code.
+`vectorize_emblems.py` is the script that started this project. It cut up one specific
+sheet of fourteen emblems at coordinates written straight into the code, and wrote out
+one SVG per emblem under names that were just as hard-coded.
 
-Il est conservé pour mémoire. Il n'est pas utilisé par l'application et n'a pas besoin
-de l'être : sa logique a été reprise et corrigée dans `src/core/`.
+It is kept for the record. The application does not use it and does not need to: its
+logic was taken over and corrected in `src/core/`.
 
-Ce qui a changé en cours de route :
+What changed along the way:
 
-| Script d'origine | Projet |
+| Original script | The project |
 | --- | --- |
-| Chemins, bandes et noms écrits en dur | N'importe quelle image, déposée par l'utilisateur |
-| OpenCV, NumPy, SciPy | Aucune dépendance de traitement |
-| Contours OpenCV, un point sur neuf | Suivi des contours sur le réseau des coins de pixels, puis Ramer-Douglas-Peucker |
-| Catmull-Rom uniforme | Catmull-Rom centripète, qui ne déborde pas sur un espacement irrégulier |
-| Seuil fixe à 70 après flou | Contour placé à mi-chemin entre le seuil et l'intensité réelle de l'emblème |
-| Aucune vérification | Tests de fidélité, et diagnostics affichés à l'utilisateur |
+| Hard-coded paths, bands and names | Any image, dropped in by the user |
+| OpenCV, NumPy, SciPy | No processing dependency at all |
+| OpenCV contours, one point in nine | Contour following on the pixel corner lattice, then Ramer-Douglas-Peucker |
+| Uniform Catmull-Rom | Centripetal Catmull-Rom, which does not overshoot on irregular spacing |
+| Fixed threshold of 70 after blur | Contour placed halfway between the threshold and the real intensity of the emblem |
+| No verification | Fidelity tests, and diagnostics shown to the user |
 
-Pour vectoriser un lot de fichiers en ligne de commande, c'est désormais :
+To vectorize a batch of files from the command line, the way to do it now is:
 
 ```bash
-npm run vectorize -- image.png sortie.svg --threshold=40
+npm run vectorize -- image.png output.svg --threshold=40
 ```
