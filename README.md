@@ -4,8 +4,8 @@
 
 # Blason
 
-<p><strong>Un emblème posé sur fond blanc, un SVG détouré, prêt à l'emploi.</strong></p>
-<p>Tout le calcul se fait sur votre machine. Aucune image n'est envoyée sur un serveur.</p>
+<p><strong>An emblem on a white background, out as a cut-out SVG, ready to use.</strong></p>
+<p>Everything is computed on your own machine. No image is ever sent to a server.</p>
 
 <p>
 <img alt="React 18" src="https://img.shields.io/badge/React-18-1c1714?style=flat-square&logo=react&logoColor=61DAFB&labelColor=1c1714">
@@ -17,170 +17,184 @@
 
 <p>
 <img alt="Linux, Windows, macOS" src="https://img.shields.io/badge/Linux%20%C2%B7%20Windows%20%C2%B7%20macOS-C2410C?style=flat-square">
-<img alt="18 tests" src="https://img.shields.io/badge/tests-18%20au%20vert-C2410C?style=flat-square">
-<img alt="Fidélité 0.986 à 0.996" src="https://img.shields.io/badge/fid%C3%A9lit%C3%A9-0.986%20%C3%A0%200.996-C2410C?style=flat-square">
-<img alt="Traitement sans dépendance" src="https://img.shields.io/badge/traitement-sans%20d%C3%A9pendance-C2410C?style=flat-square">
-<img alt="Licence MIT" src="https://img.shields.io/badge/licence-MIT-C2410C?style=flat-square">
+<img alt="18 tests" src="https://img.shields.io/badge/tests-18%20green-C2410C?style=flat-square">
+<img alt="Fidelity 0.986 to 0.996" src="https://img.shields.io/badge/fidelity-0.986%20to%200.996-C2410C?style=flat-square">
+<img alt="Dependency-free processing" src="https://img.shields.io/badge/processing-dependency--free-C2410C?style=flat-square">
+<img alt="MIT license" src="https://img.shields.io/badge/license-MIT-C2410C?style=flat-square">
 </p>
 
-<img src="docs/images/interface.png" width="820" alt="L'interface, une image vectorisée">
+<img src="docs/images/interface.png" width="820" alt="The interface, with an image vectorized">
 
 </div>
 
-## Le projet
+## The project
 
-Un logo scanné, exporté d'une planche ou récupéré en PNG reste une image matricielle :
-il bave dès qu'on l'agrandit, et son fond blanc se voit sur toute surface qui ne l'est
-pas. Le redessiner à la main dans un éditeur vectoriel prend une heure par emblème.
+A logo that was scanned, exported from a sheet or saved as a PNG stays a raster image:
+it smears as soon as you enlarge it, and its white background shows on any surface that
+is not white. Redrawing it by hand in a vector editor takes an hour per emblem.
 
-Blason fait ce passage automatiquement. Vous déposez des PNG, WebP ou JPEG,
-il en sort des SVG qui ne contiennent qu'un tracé rempli, sans fond : ils se posent sur
-n'importe quelle couleur, s'impriment à n'importe quelle taille et pèsent quelques
-kilo-octets.
+Blason does that conversion automatically. You drop in PNG, WebP or JPEG files, and out
+come SVGs that hold nothing but a filled path, with no background: they sit on any
+color, print at any size and weigh a few kilobytes.
 
-Le projet est né d'un script Python jetable qui découpait une planche de quatorze
-emblèmes à des coordonnées écrites en dur. Il en reste l'idée ; le traitement a été
-réécrit, corrigé et mesuré. Le script d'origine est conservé dans
-[`legacy/`](legacy/README.md).
+The project grew out of a throwaway Python script that cut up a sheet of fourteen
+emblems at coordinates written straight into the code. The idea is all that is left of
+it; the processing has been rewritten, corrected and measured. The original script is
+kept in [`legacy/`](legacy/README.md).
 
-## Trois conditions pour un bon résultat
+## Three conditions for a good result
 
 > [!IMPORTANT]
-> L'image déposée doit porter **une seule couleur, homogène sur tout l'emblème**. Blason
-> rend un tracé rempli d'une couleur unique : il ne sait pas découper une photo, un
-> dégradé, un logo à plusieurs teintes ou une illustration détaillée. Un emblème
-> monochrome sur fond blanc donne un SVG net ; une image complexe donne une silhouette
-> pleine, sans ses nuances.
+> The image you drop in must carry **one single color, even across the whole emblem**.
+> Blason outputs a path filled with one color: it cannot cut out a photo, a gradient, a
+> logo in several shades or a detailed illustration. A monochrome emblem on a white
+> background gives a crisp SVG; a complex image gives a solid silhouette, stripped of
+> its shading.
 
-1. **Une seule couleur, uniforme.** Tout ce qui est encré devient un même aplat. Les
-   nuances internes, les dégradés et les secondes couleurs sont perdus.
-2. **Fond parfaitement blanc**, sans ombre portée ni dégradé. Ce qui n'est pas blanc est
-   considéré comme faisant partie de l'emblème.
-3. **Couleur franche et bien visible.** Un emblème presque blanc est confondu avec le
-   fond ; le seuil de détection peut être abaissé, mais le résultat restera incertain.
+1. **One single, even color.** Everything inked becomes the same flat fill. Internal
+   shading, gradients and second colors are lost.
+2. **A perfectly white background**, with no drop shadow and no gradient. Anything that
+   is not white is treated as part of the emblem.
+3. **A solid, clearly visible color.** An almost white emblem is confused with the
+   background; the detection threshold can be lowered, but the result will stay
+   uncertain.
 
-Le logiciel vérifie ces points sur chaque image et le dit clairement quand ils ne sont
-pas réunis, plutôt que de rendre un fichier décevant sans explication.
+The software checks these points on every image and says so plainly when they are not
+met, rather than handing back a disappointing file with no explanation.
 
-## Les technologies, et pourquoi
+## The technologies, and why
 
-| Brique | Choix | Raison |
+| Piece | Choice | Reason |
 | --- | --- | --- |
-| Traitement d'image | TypeScript, **aucune bibliothèque** | Le pipeline est écrit à la main, sans OpenCV ni WASM à embarquer. Il ne touche jamais au DOM, donc le même code tourne dans le navigateur, dans un worker, dans Node sous test et dans la webview du logiciel de bureau. |
-| Calcul | **Web Worker** | Une grande image ne doit pas figer l'interface. Le worker garde les pixels : régler un curseur n'envoie que les réglages. |
-| Interface | **React 18** et **Vite 5** | Peu d'état, beaucoup de rendu : React suffit. Vite donne un démarrage immédiat et un paquet de 51 Ko compressé. |
-| Types | **TypeScript 5.6**, mode strict | Les tableaux de pixels et les systèmes de coordonnées sont l'endroit idéal pour se tromper d'une unité. |
-| Bureau | **Tauri 2** et **Rust 1.77** | La webview du système au lieu d'un Chromium embarqué : 1,6 Mo de paquet Linux, là où un équivalent Electron se compte en centaines de méga-octets. Rust n'ouvre que la fenêtre et enregistre le fichier. |
-| Tests | `node:test`, sans dépendance | Les tests vérifient de la géométrie, pas des composants : ils n'ont besoin d'aucun navigateur. |
+| Image processing | TypeScript, **no library** | The pipeline is written by hand, with no OpenCV and no WASM to ship. It never touches the DOM, so the same code runs in the browser, in a worker, in Node under test and in the webview of the desktop app. |
+| Computation | **Web Worker** | A large image must not freeze the interface. The worker keeps the pixels: moving a slider sends only the settings. |
+| Interface | **React 18** and **Vite 5** | Little state, plenty of rendering: React is enough. Vite starts instantly and produces a 51 KB compressed bundle. |
+| Types | **TypeScript 5.6**, strict mode | Pixel arrays and coordinate systems are exactly where you get an off-by-one. |
+| Desktop | **Tauri 2** and **Rust 1.77** | The system webview instead of a bundled Chromium: a 1.7 MB Linux package, where an Electron equivalent runs into hundreds of megabytes. Rust only opens the window and saves the file. |
+| Tests | `node:test`, no dependency | The tests check geometry, not components: they need no browser at all. |
 
-## Démarrer
+## Download
+
+Ready-to-install packages are in [`installers/`](installers/README.md):
+
+| System | File | Size |
+| --- | --- | --- |
+| Linux (Debian, Ubuntu) | `Blason_0.1.0_amd64.deb` | 1.7 MB |
+| Linux (any distribution) | `Blason_0.1.0_amd64.AppImage` | 80 MB |
+| Windows 10 and 11 | `Blason_0.1.0_x64-setup.exe` | 1.4 MB |
+
+macOS has to be built on a Mac, see [`docs/desktop.md`](docs/desktop.md). The packages
+are not signed, so Windows shows a SmartScreen warning on first launch.
+
+## Getting started
 
 ```bash
 npm install
 npm run dev      # http://localhost:5173
 ```
 
-| Commande | Rôle |
+| Command | Role |
 | --- | --- |
-| `npm run dev` | Serveur de développement |
-| `npm run build` | Vérifie les types puis produit le site statique dans `dist/` |
-| `npm run preview` | Sert le résultat de `build` |
-| `npm test` | Types, puis la suite de tests du cœur de traitement |
-| `npm run vectorize -- image.png sortie.svg` | Vectorise un fichier en ligne de commande |
-| `npm run tauri dev` / `npm run tauri build` | Version bureau, voir [`docs/desktop.md`](docs/desktop.md) |
-| `npm run tauri icon public/logo.svg` | Régénère toutes les icônes depuis le logo |
+| `npm run dev` | Development server |
+| `npm run build` | Checks the types, then produces the static site in `dist/` |
+| `npm run preview` | Serves the result of `build` |
+| `npm test` | Types, then the test suite of the processing core |
+| `npm run vectorize -- image.png output.svg` | Vectorizes one file from the command line |
+| `npm run tauri dev` / `npm run tauri build` | Desktop build, see [`docs/desktop.md`](docs/desktop.md) |
+| `npm run tauri icon public/logo.svg` | Regenerates every icon from the logo |
 
-## Utiliser
+## Using it
 
-Déposez une ou plusieurs images, puis téléchargez les SVG. Chaque carte montre le tracé
-obtenu sur un damier, qui rend le fond manquant visible, et donne le nombre de tracés,
-de points et le poids du fichier.
+Drop in one or more images, then download the SVGs. Each card shows the resulting path
+on a checkerboard, which makes the missing background visible, and gives the number of
+paths, the number of points and the file size.
 
-La couleur est détectée sur l'image. Le sélecteur permet de la remplacer, par exemple
-pour décliner un même emblème en plusieurs teintes.
+The color is detected from the image. The picker lets you replace it, for instance to
+issue the same emblem in several shades.
 
-### Réglages
+### Settings
 
-| Réglage | Effet |
+| Setting | Effect |
 | --- | --- |
-| Seuil de détection | Ce qui compte comme emblème. À baisser pour une teinte claire, à monter si le papier scanné est grisé. |
-| Finesse du tracé | Suréchantillonnage avant le tracé des contours. 3 suffit presque toujours. |
-| Lissage | Adoucit l'escalier des pixels. Trop fort, les angles s'arrondissent. |
-| Simplification | Arbitre entre le poids du fichier et la fidélité au pixel. |
-| Formes ignorées | Surface en dessous de laquelle une tache est tenue pour une poussière. |
-| Marge | Espace blanc laissé autour de l'emblème dans le SVG. |
+| Detection threshold | What counts as the emblem. Lower it for a light shade, raise it if the scanned paper is greyish. |
+| Contour precision | Upsampling applied before the contours are traced. 3 is almost always enough. |
+| Smoothing | Softens the pixel staircase. Too much, and the corners round off. |
+| Simplification | Trades file size against fidelity to the pixels. |
+| Ignored shapes | Area below which a speck is treated as dust. |
+| Padding | White space left around the emblem inside the SVG. |
 
-## Comment ça marche
+## How it works
 
-L'image devient un champ d'encre, c'est-à-dire la distance au blanc de chaque pixel.
-Ce champ est suréchantillonné, lissé, puis binarisé à mi-chemin entre le seuil de
-détection et l'intensité réelle de l'emblème, ce qui place le contour sur le bord perçu
-au lieu de le dilater. Les contours de ce masque sont suivis sur le réseau des coins de
-pixels, simplifiés par Ramer-Douglas-Peucker, puis transformés en courbes de Bézier
-cubiques par une spline Catmull-Rom centripète. Le SVG final contient un seul tracé en
-`fill-rule="evenodd"` : les trous se découpent tout seuls.
+The image becomes an ink field, that is, the distance from white of every pixel. That
+field is upsampled, smoothed, then binarized halfway between the detection threshold
+and the real intensity of the emblem, which places the contour on the perceived edge
+instead of dilating it. The contours of that mask are followed on the lattice of pixel
+corners, simplified by Ramer-Douglas-Peucker, then turned into cubic Bezier curves by a
+centripetal Catmull-Rom spline. The final SVG holds a single path in
+`fill-rule="evenodd"`: the holes cut themselves out.
 
-Le détail des sept étapes et des choix est dans
+The detail of the seven steps and of the choices behind them is in
 [`docs/architecture.md`](docs/architecture.md).
 
-## Fiabilité
+## Reliability
 
-La suite de tests vectorise des formes connues (carré, disque, anneau, forme fine),
-**re-rasterise le SVG produit** avec son propre moteur de remplissage et le compare
-pixel par pixel à l'image de départ. La fidélité mesurée va de 0,986 à 0,996
-d'intersection sur union. Un fichier bien formé qui ne suit pas la forme passerait tous
-les autres tests et échouerait sur celui-là.
+The test suite vectorizes known shapes (square, disc, ring, thin shape),
+**re-rasterizes the resulting SVG** with its own fill engine and compares it pixel by
+pixel to the starting image. The measured fidelity ranges from 0.986 to 0.996
+intersection over union. A well-formed file that did not follow the shape would pass
+every other test and fail that one.
 
 ```bash
 npm test
 ```
 
-Pour vérifier la chaîne complète dans un vrai navigateur, décodage et worker compris,
-lancez `npm run dev` puis ouvrez `/dev/selftest.html`.
+To check the full chain in a real browser, decoding and worker included, run
+`npm run dev` then open `/dev/selftest.html`.
 
-## Version bureau
+## Desktop build
 
-Le logiciel s'installe sur Linux, Windows et macOS. Un paquet ne se fabrique que sur le
-système qu'il vise, d'où le workflow GitHub Actions qui compile sur quatre machines.
+The app installs on Linux, Windows and macOS. A package can only be built on the system
+it targets, hence the GitHub Actions workflow that builds on four machines.
 
-| Système | Formats | Taille |
+| System | Formats | Size |
 | --- | --- | --- |
-| Linux | `.deb`, `.AppImage` | 1,7 Mo et 80 Mo |
-| Windows | `.exe` (NSIS), `.msi` | 1,4 Mo |
-| macOS | `.app`, `.dmg` | environ 10 Mo |
+| Linux | `.deb`, `.AppImage` | 1.7 MB and 80 MB |
+| Windows | `.exe` (NSIS), `.msi` | 1.4 MB |
+| macOS | `.app`, `.dmg` | about 10 MB |
 
-La fenêtre s'ouvre centrée, petite et carrée : 620 par 620, redimensionnable, rien à
-faire défiler pour atteindre le bouton de téléchargement.
+The window opens centered, small and square: 620 by 620, resizable, with nothing to
+scroll to reach the download button.
 
-<img src="docs/images/desktop-window.png" width="420" alt="La fenêtre du logiciel de bureau">
+<img src="docs/images/desktop-window.png" width="420" alt="The window of the desktop app">
 
-Prérequis, compilation locale, compilation croisée et signature :
+Prerequisites, local build, cross-compilation and signing:
 [`docs/desktop.md`](docs/desktop.md).
 
 ## Structure
 
 ```
-public/logo.svg   la marque, source unique des icônes
+public/logo.svg   the mark, single source of every icon
 src/
-  core/           traitement d'image pur, sans DOM, testable dans Node
-  platform/       décodage des fichiers, worker, enregistrement web ou bureau
-  workers/        le worker de vectorisation et son protocole
-  components/     interface React
-  hooks/          état de l'application
-  styles/         les variables de couleur et la mise en page
-src-tauri/        coque bureau en Rust, et les icônes
-tests/            géométrie, fidélité, tangentes des courbes
-scripts/          vectorisation en ligne de commande
-dev/              auto-test navigateur
-docs/             architecture, identité et guide bureau
-legacy/           le script Python d'origine, conservé pour mémoire
-.github/          compilation des paquets Linux, Windows et macOS
+  core/           pure image processing, no DOM, testable in Node
+  platform/       file decoding, worker, web or desktop saving
+  workers/        the vectorization worker and its protocol
+  components/     React interface
+  hooks/          application state
+  styles/         the color variables and the layout
+src-tauri/        Rust desktop shell, and the icons
+tests/            geometry, fidelity, curve tangents
+scripts/          command line vectorization
+dev/              browser self-test
+docs/             architecture, identity and desktop guide
+installers/       the packages to download, one per system
+legacy/           the original Python script, kept for the record
+.github/          builds the Linux, Windows and macOS packages
 ```
 
-## Licence
+## License
 
 [MIT](LICENSE), copyright 2026 PANK4SS.
 
-Vous pouvez l'utiliser, le modifier, le redistribuer, le vendre et le forker, pour
-n'importe quel usage. La seule obligation est de conserver la mention de copyright et le
-texte de la licence dans les copies, afin que la source d'origine reste citée.
+You may use it, modify it, redistribute it, sell it and fork it, for any purpose at
+all. The only obligation is to keep the copyright notice and the license text in the
+copies, so that the original source stays credited.
