@@ -4,6 +4,8 @@
   "version": "0.1.0",
   "type": "module",
   "description": "Blason, convertit un emblème sur fond blanc en SVG détouré",
+  "license": "MIT",
+  "author": "PANK4SS",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
