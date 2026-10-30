@@ -1,3 +1,9 @@
+# Copyright (c) 2026 PANK4SS
+# SPDX-License-Identifier: MIT
+#
+# Script d'origine du projet Blason, conserve pour memoire. Non utilise par
+# l'application : sa logique a ete reprise et corrigee dans src/core/.
+
 import cv2, numpy as np, os, sys
 from scipy.ndimage import gaussian_filter1d
 
