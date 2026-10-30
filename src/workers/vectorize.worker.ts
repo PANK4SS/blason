@@ -3,7 +3,7 @@ import { vectorize } from '../core/vectorize';
 import type { RasterImage } from '../core/types';
 import type { WorkerRequest, WorkerResponse } from './protocol';
 
-/** Le worker garde les pixels : rejouer un réglage ne recopie pas l'image. */
+/** The worker keeps the pixels, so replaying a setting does not copy the image again. */
 const images = new Map<string, { image: RasterImage; title: string }>();
 
 const reply = (message: WorkerResponse): void => {
@@ -30,7 +30,7 @@ self.onmessage = (event: MessageEvent<WorkerRequest>): void => {
       type: 'failed',
       id: message.id,
       requestId: message.requestId,
-      message: "L'image n'est plus en mémoire.",
+      message: 'The image is no longer in memory.',
     });
     return;
   }
@@ -50,7 +50,7 @@ self.onmessage = (event: MessageEvent<WorkerRequest>): void => {
       type: 'failed',
       id: message.id,
       requestId: message.requestId,
-      message: error instanceof Error ? error.message : 'Vectorisation impossible.',
+      message: error instanceof Error ? error.message : 'Vectorization failed.',
     });
   }
 };

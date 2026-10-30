@@ -1,9 +1,9 @@
 /**
- * Enregistrement d'un fichier, côté web comme côté bureau.
+ * Saving a file, on the web as well as on the desktop.
  *
- * Dans un navigateur, un lien de téléchargement suffit. Sous Tauri, la webview
- * ne télécharge pas : on passe par la boîte de dialogue native, chargée à la
- * demande pour que le paquet web n'embarque rien d'inutile.
+ * In a browser a download link is enough. Under Tauri the webview does not
+ * download, so it goes through the native dialog, loaded on demand so the web
+ * bundle carries nothing it does not need.
  */
 export function isDesktop(): boolean {
   return typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
@@ -24,7 +24,7 @@ function downloadInBrowser(filename: string, contents: string, mime: string): vo
   document.body.append(link);
   link.click();
   link.remove();
-  // Laisse le temps au téléchargement de démarrer avant de libérer l'URL.
+  // Give the download time to start before releasing the URL.
   window.setTimeout(() => URL.revokeObjectURL(url), 10_000);
 }
 
@@ -36,7 +36,7 @@ async function saveWithNativeDialog(filename: string, contents: string): Promise
 
   const path = await save({
     defaultPath: filename,
-    filters: [{ name: 'Image vectorielle', extensions: ['svg'] }],
+    filters: [{ name: 'Vector image', extensions: ['svg'] }],
   });
   if (!path) return false;
 

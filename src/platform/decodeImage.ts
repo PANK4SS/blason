@@ -3,7 +3,7 @@ import type { RasterImage } from '../core/types';
 export const ACCEPTED_TYPES = ['image/png', 'image/webp', 'image/jpeg'] as const;
 export const ACCEPTED_EXTENSIONS = ['.png', '.webp', '.jpg', '.jpeg'] as const;
 
-/** Taille au-delà de laquelle l'image est réduite avant traitement. */
+/** Size above which the image is scaled down before processing. */
 const MAX_EDGE = 2000;
 
 export function isSupported(file: File): boolean {
@@ -13,8 +13,8 @@ export function isSupported(file: File): boolean {
 }
 
 /**
- * Décode un fichier image en pixels RGBA via la plateforme, puis le réduit si
- * nécessaire pour garder une vectorisation rapide.
+ * Decodes an image file into RGBA pixels through the platform, then scales it
+ * down if needed to keep vectorization fast.
  */
 export async function decodeImage(file: File): Promise<RasterImage> {
   const bitmap = await createBitmap(file);
@@ -26,7 +26,7 @@ export async function decodeImage(file: File): Promise<RasterImage> {
   canvas.width = width;
   canvas.height = height;
   const context = canvas.getContext('2d', { willReadFrequently: true });
-  if (!context) throw new Error("Le navigateur n'autorise pas la lecture des pixels.");
+  if (!context) throw new Error('The browser does not allow reading the pixels.');
 
   context.imageSmoothingEnabled = true;
   context.imageSmoothingQuality = 'high';
@@ -42,7 +42,7 @@ async function createBitmap(file: File): Promise<ImageBitmap | HTMLImageElement>
     try {
       return await createImageBitmap(file);
     } catch {
-      // Certains moteurs de webview refusent le WebP : on retombe sur <img>.
+      // Some webview engines reject WebP, so fall back to <img>.
     }
   }
 
@@ -51,11 +51,11 @@ async function createBitmap(file: File): Promise<ImageBitmap | HTMLImageElement>
     return await new Promise<HTMLImageElement>((resolve, reject) => {
       const image = new Image();
       image.onload = () => resolve(image);
-      image.onerror = () => reject(new Error(`Format illisible : ${file.name}`));
+      image.onerror = () => reject(new Error(`Unreadable format: ${file.name}`));
       image.src = url;
     });
   } finally {
-    // L'URL reste valide le temps du décodage, qui est terminé ici.
+    // The URL stays valid for the duration of the decode, which is done here.
     URL.revokeObjectURL(url);
   }
 }

@@ -12,8 +12,8 @@ interface Deferred {
 }
 
 /**
- * Accès au worker de vectorisation sous forme de promesses. Le calcul sort du
- * fil principal : l'interface reste réactive même sur une grande image.
+ * Promise-based access to the vectorization worker. The computation leaves the
+ * main thread, so the interface stays responsive even on a large image.
  */
 export class VectorizerClient {
   private readonly worker: Worker;
@@ -26,13 +26,13 @@ export class VectorizerClient {
       type: 'module',
     });
     this.worker.onmessage = (event: MessageEvent<WorkerResponse>) => this.dispatch(event.data);
-    // Un worker qui échoue au chargement ne répond jamais : sans cela, les
-    // promesses en attente resteraient bloquées et l'interface figée.
-    this.worker.onerror = (event) => this.failAll(event.message || 'Le moteur de vectorisation a échoué.');
-    this.worker.onmessageerror = () => this.failAll('Message illisible reçu du moteur de vectorisation.');
+    // A worker that fails to load never answers. Without this, the pending
+    // promises would stay stuck and the interface frozen.
+    this.worker.onerror = (event) => this.failAll(event.message || 'The vectorization engine failed.');
+    this.worker.onmessageerror = () => this.failAll('Unreadable message received from the vectorization engine.');
   }
 
-  /** Confie les pixels au worker. Le tampon est transféré, pas copié. */
+  /** Hands the pixels over to the worker. The buffer is transferred, not copied. */
   load(id: string, image: RasterImage, title: string): Promise<void> {
     return new Promise((resolve) => {
       const waiting = this.loads.get(id) ?? [];

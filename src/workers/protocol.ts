@@ -1,9 +1,9 @@
 import type { RasterImage, VectorizeOptions, VectorizeResult } from '../core/types';
 
 /**
- * Messages échangés avec le worker. L'image y reste en cache : seuls les
- * réglages circulent ensuite. Chaque exécution porte un `requestId` pour que
- * deux réglages enchaînés ne puissent pas croiser leurs réponses.
+ * Messages exchanged with the worker. The image stays cached there, so only
+ * the settings travel afterwards. Every run carries a `requestId` so that two
+ * settings changed in a row cannot cross their answers.
  */
 export type WorkerRequest =
   | { type: 'load'; id: string; image: RasterImage; title: string }
