@@ -152,7 +152,7 @@ système qu'il vise, d'où le workflow GitHub Actions qui compile sur quatre mac
 La fenêtre s'ouvre centrée, petite et carrée : 620 par 620, redimensionnable, rien à
 faire défiler pour atteindre le bouton de téléchargement.
 
-<img src="docs/images/fenetre-bureau.png" width="420" alt="La fenêtre du logiciel de bureau">
+<img src="docs/images/desktop-window.png" width="420" alt="La fenêtre du logiciel de bureau">
 
 Prérequis, compilation locale, compilation croisée et signature :
 [`docs/desktop.md`](docs/desktop.md).

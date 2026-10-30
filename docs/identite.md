@@ -1,6 +1,6 @@
 # Identité
 
-<img src="images/logo-tailles.png" width="700" alt="Le logo de 256 à 32 pixels">
+<img src="images/logo-sizes.png" width="700" alt="Le logo de 256 à 32 pixels">
 
 Le logo tient dans un seul fichier, [`public/logo.svg`](../public/logo.svg) : un écusson
 blanc aux yeux évidés sur un carré arrondi en dégradé d'orange chaleureux. Il sert
