@@ -1,100 +1,100 @@
 # Architecture
 
-## Principe
+## Principle
 
-Le traitement ne dépend jamais du DOM. `src/core/` ne connaît que des tableaux de
-pixels : le même code tourne dans le navigateur, dans un Web Worker, dans Node pour les
-tests, et dans la webview de l'application de bureau. Aucune version du traitement n'est
-dupliquée pour le bureau.
+The processing never depends on the DOM. `src/core/` knows nothing but arrays of
+pixels: the same code runs in the browser, in a Web Worker, in Node for the tests, and
+in the webview of the desktop application. No version of the processing is duplicated
+for the desktop.
 
 ```
-fichier → décodage plateforme → RasterImage → worker → core → SVG → enregistrement
+file -> platform decoding -> RasterImage -> worker -> core -> SVG -> saving
 ```
 
-| Couche | Dossier | Dépendances autorisées |
+| Layer | Folder | Allowed dependencies |
 | --- | --- | --- |
-| Traitement | `src/core/` | aucune |
-| Plateforme | `src/platform/`, `src/workers/` | navigateur, Tauri |
-| Interface | `src/components/`, `src/hooks/` | React, plateforme, types du cœur |
+| Processing | `src/core/` | none |
+| Platform | `src/platform/`, `src/workers/` | browser, Tauri |
+| Interface | `src/components/`, `src/hooks/` | React, platform, core types |
 
-## Les étapes du traitement
+## The processing steps
 
-`src/core/vectorize.ts` enchaîne sept étapes, chacune dans son module.
+`src/core/vectorize.ts` chains seven steps, each one in its own module.
 
-### 1. Champ d'encre (`field.ts`)
+### 1. Ink field (`field.ts`)
 
-Chaque pixel devient `255 - min(r, g, b)`, multiplié par son alpha : 0 sur du blanc, 255
-sur du noir ou une couleur saturée. Un PNG déjà détouré fonctionne donc aussi, ses zones
-transparentes comptant comme du fond.
+Every pixel becomes `255 - min(r, g, b)`, multiplied by its alpha: 0 on white, 255 on
+black or on a saturated color. An already cut-out PNG therefore works too, its
+transparent areas counting as background.
 
-### 2. Suréchantillonnage et flou (`field.ts`)
+### 2. Upsampling and blur (`field.ts`)
 
-Le champ est agrandi (bilinéaire) puis légèrement flouté. Sans cette étape, les contours
-suivent l'escalier des pixels ; avec elle, ils passent entre les pixels.
+The field is enlarged (bilinear) then blurred slightly. Without this step the contours
+follow the pixel staircase; with it, they pass between the pixels.
 
-### 3. Binarisation (`field.ts`)
+### 3. Binarization (`field.ts`)
 
-Le contour est placé à mi-chemin entre le seuil de détection et l'intensité réelle de
-l'emblème (`inkMagnitude`). Un seuil fixe dilaterait les emblèmes très colorés et
-éroderait les emblèmes pâles ; ce point milieu suit le bord perçu dans les deux cas.
+The contour is placed halfway between the detection threshold and the real intensity of
+the emblem (`inkMagnitude`). A fixed threshold would dilate heavily colored emblems and
+erode pale ones; this midpoint follows the perceived edge in both cases.
 
-### 4. Tracé des contours (`contour.ts`)
+### 4. Contour tracing (`contour.ts`)
 
-Chaque pixel d'encre pose une arête orientée sur les côtés qui touchent le fond, dans le
-réseau des coins de pixels. Les arêtes se chaînent en boucles fermées. Le graphe étant
-équilibré (autant d'arêtes entrantes que sortantes à chaque sommet), une boucle revient
-toujours à son point de départ.
+Every ink pixel lays a directed edge on the sides that touch the background, within the
+lattice of pixel corners. The edges chain into closed loops. Because the graph is
+balanced (as many incoming as outgoing edges at every vertex), a loop always comes back
+to its starting point.
 
-Les contours extérieurs tournent dans un sens, les trous dans l'autre : avec
-`fill-rule="evenodd"`, les trous se découpent sans traitement supplémentaire. Sur un
-sommet où deux formes ne se touchent que par un coin, le virage le plus serré est
-privilégié, ce qui les sépare au lieu de les fusionner.
+Outer contours wind one way, holes the other: with `fill-rule="evenodd"`, the holes are
+cut out with no extra processing. On a vertex where two shapes meet only at a corner,
+the tightest turn wins, which separates them instead of merging them.
 
-### 5. Lissage et simplification (`polyline.ts`)
+### 5. Smoothing and simplification (`polyline.ts`)
 
-Lissage gaussien circulaire, puis Ramer-Douglas-Peucker : une ligne droite se réduit à
-ses extrémités, une courbe garde ce qu'il lui faut de points. Les segments trop longs
-sont redécoupés pour borner l'écart des courbes.
+Circular Gaussian smoothing, then Ramer-Douglas-Peucker: a straight line collapses to
+its endpoints, a curve keeps as many points as it needs. Segments that are too long are
+split again to bound how far the curves stray.
 
-### 6. Courbes de Bézier (`path.ts`)
+### 6. Bezier curves (`path.ts`)
 
-Spline Catmull-Rom **centripète** convertie en cubiques. La version uniforme déborde
-quand l'espacement des points est irrégulier, ce qui est systématique après
+A **centripetal** Catmull-Rom spline converted into cubics. The uniform variant
+overshoots when the point spacing is irregular, which it always is after
 simplification.
 
-### 7. Document SVG (`path.ts`)
+### 7. SVG document (`path.ts`)
 
-Un seul élément `<path>`, rempli, sans fond, sans attribut de style : le fichier se pose
-sur n'importe quelle couleur et se redimensionne sans perte.
+A single `<path>` element, filled, with no background and no style attribute: the file
+sits on any color and resizes without loss.
 
 ## Diagnostics
 
-`diagnose.ts` vérifie les conditions annoncées à l'utilisateur : blancheur du liseré de
-bordure, couverture d'encre, emblème touchant le bord, couleur trop claire. Un résultat
-décevant est ainsi expliqué, au lieu de passer pour un bug.
+`diagnose.ts` checks the conditions stated to the user: whiteness of the border band,
+ink coverage, emblem touching the edge, color too light. A disappointing result is
+explained, instead of looking like a bug.
 
-## Couleur
+## Color
 
-`color.ts` prend la médiane par canal des pixels franchement encrés. La médiane ignore
-l'anti-aliasing délavé, qu'une moyenne ramènerait vers le blanc. Si aucun pixel n'est
-franc, parce que l'emblème est pâle, la mesure est reprise au seuil de détection.
+`color.ts` takes the per-channel median of the solidly inked pixels. The median ignores
+washed-out anti-aliasing, which an average would drag towards white. If no pixel is
+solid, because the emblem is pale, the measurement is taken again at the detection
+threshold.
 
-## Concurrence
+## Concurrency
 
-Le worker garde les pixels en mémoire (`Map` par identifiant d'image) : déplacer un
-curseur de réglage n'envoie que les nouveaux réglages, jamais l'image. Les pixels sont
-transférés, non copiés, au chargement.
+The worker keeps the pixels in memory (a `Map` keyed by image id): moving a settings
+slider sends only the new settings, never the image. The pixels are transferred, not
+copied, when the image is loaded.
 
-Chaque exécution porte un numéro de requête, et l'interface ignore les résultats d'une
-exécution qu'un réglage plus récent a remplacée : deux réglages enchaînés ne peuvent pas
-afficher l'ancien résultat.
+Every run carries a request number, and the interface ignores the results of a run that
+a more recent setting has replaced: two settings changed in a row cannot display the
+older result.
 
 ## Tests
 
-`tests/fidelity.test.mjs` est le test qui compte : il vectorise une forme connue,
-**re-rasterise le SVG obtenu** avec son propre moteur de remplissage (`evenodd`), et
-compare pixel par pixel à l'image de départ. C'est la seule mesure qui prouve que le
-tracé épouse réellement la forme, et non qu'il produit un fichier bien formé.
+`tests/fidelity.test.mjs` is the test that counts: it vectorizes a known shape,
+**re-rasterizes the resulting SVG** with its own fill engine (`evenodd`), and compares
+it pixel by pixel to the starting image. It is the only measurement that proves the
+path really hugs the shape, rather than merely producing a well-formed file.
 
-`tests/vectorize.test.mjs` couvre les cas de forme (trous, formes multiples, poussières)
-et les diagnostics ; `tests/path.test.mjs` verrouille les tangentes des courbes.
+`tests/vectorize.test.mjs` covers the shape cases (holes, multiple shapes, specks) and
+the diagnostics; `tests/path.test.mjs` locks down the tangents of the curves.
