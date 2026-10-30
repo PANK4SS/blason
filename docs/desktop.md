@@ -1,157 +1,155 @@
-# Version bureau (Linux, Windows, macOS)
+# Desktop build (Linux, Windows, macOS)
 
-L'application web devient un logiciel de bureau avec Tauri. La coque Rust, la
-configuration, les permissions et les icônes sont en place dans `src-tauri/`.
+The web application becomes a desktop app through Tauri. The Rust shell, the
+configuration, the permissions and the icons are all in place in `src-tauri/`.
 
-## La règle qui commande tout
+## The rule that governs everything
 
-**Un paquet ne se fabrique que sur le système qu'il vise.** Tauri s'appuie sur la
-webview native de chaque système : WebKitGTK sous Linux, WebView2 sous Windows, WebKit
-sous macOS. Il n'existe pas de compilation croisée fiable, et un `.dmg` exige en plus
-les outils Apple, qui ne tournent que sur macOS.
+**A package can only be built on the system it targets.** Tauri relies on each
+system's native webview: WebKitGTK on Linux, WebView2 on Windows, WebKit on macOS.
+There is no reliable cross-compilation, and a `.dmg` additionally requires Apple's
+tools, which only run on macOS.
 
-Les trois paquets se produisent donc de deux façons :
+So the three packages are produced in one of two ways:
 
-| Voie | Ce qu'elle donne | Quand |
+| Route | What it gives you | When |
 | --- | --- | --- |
-| Compilation locale | Le paquet du système sur lequel vous êtes | Pour tester, ou si vous n'avez qu'un système à servir |
-| GitHub Actions | Les trois systèmes d'un coup | Pour livrer |
+| Local build | The package for the system you are on | To test, or if you only have one system to serve |
+| GitHub Actions | All three systems at once | To ship |
 
-## Voie 1 : compiler ici
+## Route 1: build here
 
-### Prérequis
+### Prerequisites
 
-Rust est déjà installé sur cette machine (`cargo 1.99`). Il manque les en-têtes de
-développement de WebKitGTK, qui demandent les droits administrateur :
+Rust is already installed on this machine (`cargo 1.99`). What is missing is the
+WebKitGTK development headers, which need administrator rights:
 
 ```bash
 sudo apt install libwebkit2gtk-4.1-dev libxdo-dev libssl-dev \
   librsvg2-dev libayatana-appindicator3-dev patchelf build-essential file
 ```
 
-Sous **Windows** : Visual Studio Build Tools (charge de travail C++) et WebView2,
-présent par défaut sur Windows 11.
-Sous **macOS** : `xcode-select --install`.
+On **Windows**: Visual Studio Build Tools (the C++ workload) and WebView2, present by
+default on Windows 11.
+On **macOS**: `xcode-select --install`.
 
-### Compiler
+### Build
 
 ```bash
-npm run tauri dev      # fenêtre de développement, rechargement à chaud
-npm run tauri build    # paquet pour le système courant
+npm run tauri dev      # development window, hot reload
+npm run tauri build    # package for the current system
 ```
 
-Les paquets sortent dans `src-tauri/target/release/bundle/` :
+The packages land in `src-tauri/target/release/bundle/`:
 
-| Système | Formats produits | Taille attendue |
+| System | Formats produced | Expected size |
 | --- | --- | --- |
-| Linux | `.deb` | environ 1,6 Mo, dépend du WebKit du système |
-| Linux | `.AppImage` | environ 80 Mo, embarque GTK et WebKit |
-| Windows | `.exe` (NSIS) et `.msi` (WiX) | environ 3 Mo, WebView2 fourni par le système |
-| macOS | `.app`, `.dmg` | environ 10 Mo |
+| Linux | `.deb` | about 1.7 MB, depends on the system WebKit |
+| Linux | `.AppImage` | about 80 MB, bundles GTK and WebKit |
+| Windows | `.exe` (NSIS) and `.msi` (WiX) | about 1.4 MB, WebView2 supplied by the system |
+| macOS | `.app`, `.dmg` | about 10 MB |
 
-L'écart de taille est normal : le `.deb` déclare ses dépendances
-(`libwebkit2gtk-4.1-0`, `libgtk-3-0`) et les emprunte au système, là où l'AppImage
-embarque tout pour tourner sur n'importe quelle distribution.
+The size gap is normal: the `.deb` declares its dependencies (`libwebkit2gtk-4.1-0`,
+`libgtk-3-0`) and borrows them from the system, whereas the AppImage bundles everything
+so it runs on any distribution.
 
-Pour ne produire qu'un format : `npm run tauri build -- --bundles deb`.
+To produce only one format: `npm run tauri build -- --bundles deb`.
 
-## Voie 2 : les trois paquets par GitHub Actions
+## Route 2: all three packages through GitHub Actions
 
-`.github/workflows/release.yml` compile sur quatre machines : Ubuntu, Windows, macOS
-Apple Silicon et macOS Intel. Les tests tournent avant chaque compilation.
+`.github/workflows/release.yml` builds on four machines: Ubuntu, Windows, macOS Apple
+Silicon and macOS Intel. The tests run before every build.
 
 ```bash
-git remote add origin git@github.com:<compte>/blason.git
+git remote add origin git@github.com:<account>/blason.git
 git push -u origin main
 git tag v0.1.0 && git push origin v0.1.0
 ```
 
-Le tag déclenche la compilation et dépose les paquets dans un brouillon de publication
-GitHub, qu'il reste à relire puis à publier. Le workflow se lance aussi à la main
-depuis l'onglet Actions (`workflow_dispatch`), ce qui produit les paquets comme
-artefacts sans rien publier.
+The tag triggers the build and drops the packages into a GitHub draft release, which
+you then review and publish. The workflow can also be started by hand from the Actions
+tab (`workflow_dispatch`), which produces the packages as artifacts without publishing
+anything.
 
-Aucun secret à configurer : `GITHUB_TOKEN` est fourni par GitHub.
+No secret to configure: `GITHUB_TOKEN` is supplied by GitHub.
 
-## Annexe : compiler le Windows depuis Linux
+## Appendix: building the Windows package from Linux
 
-Tauri qualifie cette voie d'expérimentale, et elle demande de remplacer à la main la
-chaîne d'outils Microsoft. Elle fonctionne, mais le paquet obtenu n'a jamais été ouvert
-sur une vraie machine Windows : à réserver à un essai, et à confier à GitHub Actions
-pour une livraison.
+Tauri calls this route experimental, and it requires swapping in Microsoft's toolchain
+by hand. It works, but the resulting package has never been opened on a real Windows
+machine: keep it for a trial run, and leave shipping to GitHub Actions.
 
 ```bash
 rustup target add x86_64-pc-windows-msvc
-cargo install cargo-xwin                 # en-têtes et bibliothèques MSVC
+cargo install cargo-xwin                 # MSVC headers and libraries
 sudo apt install clang lld llvm nsis     # clang-cl, lld-link, llvm-rc, makensis
 
 npm run tauri build -- --runner cargo-xwin \
   --target x86_64-pc-windows-msvc --bundles nsis
 ```
 
-Trois outils sont indispensables, et l'erreur ne le dit pas toujours clairement :
+Three tools are indispensable, and the error does not always say so clearly:
 
-| Outil | Rôle | Erreur quand il manque |
+| Tool | Role | Error when it is missing |
 | --- | --- | --- |
-| `clang-cl` | Compile le C des dépendances pour la cible Windows | `failed to find tool "clang-cl"` |
-| `llvm-rc` | Grave l'icône et la version dans le `.exe` | `NotAttempted("llvm-rc")` |
-| `makensis` | Fabrique l'installateur | `Failed to bundle app with makensis` |
+| `clang-cl` | Compiles the C of the dependencies for the Windows target | `failed to find tool "clang-cl"` |
+| `llvm-rc` | Burns the icon and the version into the `.exe` | `NotAttempted("llvm-rc")` |
+| `makensis` | Builds the installer | `Failed to bundle app with makensis` |
 
-macOS, lui, ne se compile pas depuis Linux : le `.dmg` réclame le SDK d'Apple et les
-outils `codesign` et `hdiutil`, qui n'existent que sur macOS. C'est GitHub Actions, ou
-une machine Apple.
+macOS, on the other hand, cannot be built from Linux: the `.dmg` demands Apple's SDK
+and the `codesign` and `hdiutil` tools, which exist only on macOS. That means GitHub
+Actions, or an Apple machine.
 
-## Signature
+## Signing
 
-Les paquets ne sont pas signés. En l'état :
+The packages are not signed. As things stand:
 
-- **Windows** affiche un avertissement SmartScreen au premier lancement. Le lever
-  demande un certificat de signature de code (environ 200 à 400 € par an).
-- **macOS** refuse d'ouvrir l'application sans passer par « clic droit puis Ouvrir ».
-  La lever demande un compte Apple Developer (99 € par an), puis la signature et la
-  notarisation, que `tauri-action` sait faire via des secrets de dépôt.
-- **Linux** ne demande rien.
+- **Windows** shows a SmartScreen warning on first launch. Clearing it requires a code
+  signing certificate (roughly 200 to 400 EUR per year).
+- **macOS** refuses to open the application unless you right-click and choose Open.
+  Clearing that requires an Apple Developer account (99 EUR per year), then signing and
+  notarization, which `tauri-action` knows how to do through repository secrets.
+- **Linux** asks for nothing.
 
-C'est un choix à faire au moment de distribuer, pas un défaut de configuration.
+This is a decision to make at distribution time, not a configuration flaw.
 
-## La fenêtre
+## The window
 
-Le logiciel fait une chose en quelques secondes : la fenêtre s'ouvre centrée, en 620
-par 620, sans bouton d'agrandissement, et ne descend pas sous 400 par 460. En dessous
-de 680 pixels de large, la mise en page se resserre et le rappel des deux conditions
-s'efface dès qu'une image est chargée, pour que l'aperçu, les chiffres et le bouton de
-téléchargement tiennent ensemble sans défilement.
+The app does one thing in a few seconds: the window opens centered, at 620 by 620, with
+no maximize button, and does not go below 400 by 460. Under 680 pixels wide the layout
+tightens up and the reminder of the requirements disappears as soon as an image is
+loaded, so that the preview, the numbers and the download button fit together without
+scrolling.
 
-Ces valeurs sont dans `src-tauri/tauri.conf.json`, section `app.windows`. Pour que la
-fenêtre reste au-dessus des autres, ajoutez-y `"alwaysOnTop": true`.
+These values live in `src-tauri/tauri.conf.json`, section `app.windows`. To keep the
+window above the others, add `"alwaysOnTop": true` there.
 
-## Ce que la coque fait, et ne fait pas
+## What the shell does, and does not do
 
-La vectorisation tourne dans la webview, avec exactement le même code TypeScript que la
-version web. Rust ne sert qu'à deux choses :
+Vectorization runs in the webview, with exactly the same TypeScript code as the web
+version. Rust is there for two things only:
 
-- ouvrir la fenêtre ;
-- enregistrer le fichier, parce qu'une webview ne télécharge pas comme un navigateur.
+- opening the window;
+- saving the file, because a webview does not download the way a browser does.
 
-`src/platform/save.ts` choisit seul la bonne voie : lien de téléchargement sur le web,
-boîte de dialogue native sous Tauri. Les modules Tauri ne sont chargés qu'à la demande,
-donc le paquet web n'embarque rien d'inutile.
+`src/platform/save.ts` picks the right route on its own: a download link on the web, a
+native dialog under Tauri. The Tauri modules are only loaded on demand, so the web
+bundle carries nothing it does not need.
 
 ## Permissions
 
-`src-tauri/capabilities/default.json` n'accorde que le strict nécessaire : ouvrir une
-boîte d'enregistrement, et écrire un fichier texte dans les dossiers personnels de
-l'utilisateur. Aucun accès réseau n'est demandé, et la politique de sécurité du contenu
-(`tauri.conf.json`) interdit toute source externe.
+`src-tauri/capabilities/default.json` grants the bare minimum: open a save dialog, and
+write a text file inside the user's personal folders. No network access is requested,
+and the content security policy (`tauri.conf.json`) forbids any external source.
 
-## Icônes
+## Icons
 
-Toutes les icônes dérivent d'un seul fichier, `public/logo.svg`. Après une retouche :
+Every icon derives from a single file, `public/logo.svg`. After a retouch:
 
 ```bash
 npm run tauri icon public/logo.svg
 ```
 
-La commande régénère `src-tauri/icons/` : les PNG de Linux, le `.ico` de Windows, le
-`.icns` de macOS et les tuiles du Microsoft Store. Les dossiers `android/` et `ios/`
-qu'elle crée au passage ne servent pas ici et peuvent être supprimés.
+The command regenerates `src-tauri/icons/`: the Linux PNGs, the Windows `.ico`, the
+macOS `.icns` and the Microsoft Store tiles. The `android/` and `ios/` folders it
+creates along the way are of no use here and can be deleted.
