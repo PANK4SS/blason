@@ -4,9 +4,9 @@ import { closedBezierPath } from '../dist-test/core.mjs';
 
 const numbers = (d) => (d.match(/-?\d*\.?\d+/g) ?? []).map(Number);
 
-test('à espacement régulier, la spline centripète retrouve les tangentes uniformes', () => {
-  // Carré de côté 10 : le premier segment va de (0,0) à (10,0), ses points de
-  // contrôle doivent être décalés de 1/6 de la diagonale des voisins.
+test('at even spacing, the centripetal spline recovers the uniform tangents', () => {
+  // A square of side 10: the first segment runs from (0,0) to (10,0), and its
+  // control points must be offset by 1/6 of the neighbours' diagonal.
   const square = [
     { x: 0, y: 0 },
     { x: 10, y: 0 },
@@ -21,8 +21,8 @@ test('à espacement régulier, la spline centripète retrouve les tangentes unif
   assert.ok(Math.abs(c1y - -10 / 6) < 0.01, `c1y = ${c1y}`);
 });
 
-test('les points de contrôle restent près de leur segment', () => {
-  // Un espacement très irrégulier faisait exploser les tangentes.
+test('the control points stay close to their segment', () => {
+  // Very irregular spacing used to make the tangents blow up.
   const loop = [
     { x: 0, y: 0 },
     { x: 1, y: 0 },
@@ -33,10 +33,10 @@ test('les points de contrôle restent près de leur segment', () => {
   ];
   const values = numbers(closedBezierPath(loop, 3));
 
-  for (const v of values) assert.ok(v > -40 && v < 110, `coordonnée aberrante : ${v}`);
+  for (const v of values) assert.ok(v > -40 && v < 110, `coordinate out of range: ${v}`);
 });
 
-test('des points confondus ne produisent pas de NaN', () => {
+test('coincident points do not produce NaN', () => {
   const loop = [
     { x: 5, y: 5 },
     { x: 5, y: 5 },
@@ -47,9 +47,9 @@ test('des points confondus ne produisent pas de NaN', () => {
   const values = numbers(closedBezierPath(loop, 3));
 
   assert.ok(values.length > 0);
-  for (const v of values) assert.ok(Number.isFinite(v), 'coordonnée non finie');
+  for (const v of values) assert.ok(Number.isFinite(v), 'non-finite coordinate');
 });
 
-test('une boucle trop courte ne produit aucun tracé', () => {
+test('a loop that is too short produces no path', () => {
   assert.equal(closedBezierPath([{ x: 0, y: 0 }, { x: 1, y: 1 }]), '');
 });

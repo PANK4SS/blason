@@ -1,4 +1,4 @@
-/** Fabriques d'images RGBA synthétiques pour les tests, sans fichier externe. */
+/** Factories for synthetic RGBA images, so the tests need no external file. */
 
 export function whiteCanvas(width, height) {
   const data = new Uint8ClampedArray(width * height * 4).fill(255);
@@ -34,7 +34,7 @@ export function fillDisc(image, cx, cy, radius, [r, g, b]) {
   return image;
 }
 
-/** Nombre de sous-tracés d'un `d` SVG. */
+/** Number of subpaths in an SVG `d` attribute. */
 export function countSubpaths(svg) {
   const match = svg.match(/ d="([^"]*)"/);
   if (!match) return 0;

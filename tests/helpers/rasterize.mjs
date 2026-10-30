@@ -1,6 +1,6 @@
 /**
- * Re-rasterise un SVG produit par le cœur (uniquement des M/C/Z) pour mesurer
- * objectivement sa fidélité à l'image de départ.
+ * Re-rasterizes an SVG produced by the core (only M/C/Z) to objectively
+ * measure how faithful it is to the original image.
  */
 
 export function parsePaths(svg) {
@@ -31,7 +31,7 @@ export function parsePaths(svg) {
   return loops;
 }
 
-/** Remplit les boucles selon la règle evenodd, dans un masque width x height. */
+/** Fills the loops under the evenodd rule, into a width x height mask. */
 export function fillLoops(loops, width, height) {
   const mask = new Uint8Array(width * height);
   const edges = [];
@@ -61,7 +61,7 @@ export function fillLoops(loops, width, height) {
   return mask;
 }
 
-/** Masque d'encre de référence, calculé directement sur l'image source. */
+/** Reference ink mask, computed directly on the source image. */
 export function inkMask(image, threshold) {
   const mask = new Uint8Array(image.width * image.height);
   for (let i = 0, p = 0; i < mask.length; i += 1, p += 4) {
@@ -72,7 +72,7 @@ export function inkMask(image, threshold) {
   return mask;
 }
 
-/** Intersection sur union : 1 = détourage parfait. */
+/** Intersection over union: 1 means a perfect cutout. */
 export function intersectionOverUnion(a, b) {
   let intersection = 0;
   let union = 0;
