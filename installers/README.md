@@ -6,7 +6,7 @@ matching version, and they are not signed.
 | System | File | Size | How to install |
 | --- | --- | --- | --- |
 | Debian, Ubuntu, Mint | `Blason_0.1.0_amd64.deb` | 1.7 MB | `sudo apt install ./Blason_0.1.0_amd64.deb` |
-| Any Linux distribution | `Blason_0.1.0_amd64.AppImage` | 80 MB | `chmod +x` then run it, nothing to install |
+| Any Linux distribution | `Blason_0.1.0_amd64.AppImage` | 78 MB | `chmod +x` then run it, nothing to install |
 | Windows 10 and 11 | `Blason_0.1.0_x64-setup.exe` | 1.4 MB | Run the installer |
 
 macOS is missing on purpose: a `.dmg` can only be built on a Mac, because it needs
@@ -33,7 +33,7 @@ rather than a configuration flaw.
 
 ## Rebuilding them
 
-The binaries here are not committed to git: they are build output, and an 80 MB file
+The binaries here are not committed to git: they are build output, and a 78 MB file
 has no business in a repository. Published versions are attached to the GitHub
 releases; to produce them yourself:
 

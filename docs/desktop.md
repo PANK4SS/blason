@@ -45,7 +45,7 @@ The packages land in `src-tauri/target/release/bundle/`:
 | System | Formats produced | Expected size |
 | --- | --- | --- |
 | Linux | `.deb` | about 1.7 MB, depends on the system WebKit |
-| Linux | `.AppImage` | about 80 MB, bundles GTK and WebKit |
+| Linux | `.AppImage` | about 78 MB, bundles GTK and WebKit |
 | Windows | `.exe` (NSIS) and `.msi` (WiX) | about 1.4 MB, WebView2 supplied by the system |
 | macOS | `.app`, `.dmg` | about 10 MB |
 

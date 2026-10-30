@@ -80,7 +80,7 @@ Ready-to-install packages are in [`installers/`](installers/README.md):
 | System | File | Size |
 | --- | --- | --- |
 | Linux (Debian, Ubuntu) | `Blason_0.1.0_amd64.deb` | 1.7 MB |
-| Linux (any distribution) | `Blason_0.1.0_amd64.AppImage` | 80 MB |
+| Linux (any distribution) | `Blason_0.1.0_amd64.AppImage` | 78 MB |
 | Windows 10 and 11 | `Blason_0.1.0_x64-setup.exe` | 1.4 MB |
 
 macOS has to be built on a Mac, see [`docs/desktop.md`](docs/desktop.md). The packages
@@ -158,7 +158,7 @@ it targets, hence the GitHub Actions workflow that builds on four machines.
 
 | System | Formats | Size |
 | --- | --- | --- |
-| Linux | `.deb`, `.AppImage` | 1.7 MB and 80 MB |
+| Linux | `.deb`, `.AppImage` | 1.7 MB and 78 MB |
 | Windows | `.exe` (NSIS), `.msi` | 1.4 MB |
 | macOS | `.app`, `.dmg` | about 10 MB |
 
