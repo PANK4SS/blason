@@ -147,26 +147,6 @@ faire défiler pour atteindre le bouton de téléchargement.
 Prérequis, compilation locale, compilation croisée et signature :
 [`docs/desktop.md`](docs/desktop.md).
 
-## Identité
-
-<img src="docs/images/logo-tailles.png" width="700" alt="Le logo de 256 à 32 pixels">
-
-Le logo tient dans un seul fichier, [`public/logo.svg`](public/logo.svg) : un écusson
-blanc aux yeux évidés sur un carré arrondi en dégradé d'orange chaleureux. Il sert
-d'icône d'application, de favicon et de marque dans l'en-tête, et c'est la source de
-toutes les icônes de plateforme.
-
-L'interface est en mode clair uniquement, sur fond blanc. Toute sa couleur tient dans
-une dizaine de variables CSS en haut de `src/styles/app.css`.
-
-| Usage | Valeur |
-| --- | --- |
-| Fond de page | `#FFFFFF` |
-| Panneaux et cartes | `#FBF8F5` |
-| Accent, boutons, focus | `#C2410C` |
-| Texte | `#1C1714`, et `#6B5F56` en atténué |
-| Dégradé du logo | `#FFB45E` vers `#F97E22` vers `#D2400A` |
-
 ## Structure
 
 ```
@@ -182,7 +162,7 @@ src-tauri/        coque bureau en Rust, et les icônes
 tests/            géométrie, fidélité, tangentes des courbes
 scripts/          vectorisation en ligne de commande
 dev/              auto-test navigateur
-docs/             architecture et guide bureau
+docs/             architecture, identité et guide bureau
 legacy/           le script Python d'origine, conservé pour mémoire
 .github/          compilation des paquets Linux, Windows et macOS
 ```
