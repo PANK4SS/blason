@@ -42,15 +42,24 @@ emblèmes à des coordonnées écrites en dur. Il en reste l'idée ; le traiteme
 réécrit, corrigé et mesuré. Le script d'origine est conservé dans
 [`legacy/`](legacy/README.md).
 
-## Deux conditions pour un bon résultat
+## Trois conditions pour un bon résultat
 
-1. **Fond parfaitement blanc**, sans ombre portée ni dégradé. Ce qui n'est pas blanc est
+> [!IMPORTANT]
+> L'image déposée doit porter **une seule couleur, homogène sur tout l'emblème**. Blason
+> rend un tracé rempli d'une couleur unique : il ne sait pas découper une photo, un
+> dégradé, un logo à plusieurs teintes ou une illustration détaillée. Un emblème
+> monochrome sur fond blanc donne un SVG net ; une image complexe donne une silhouette
+> pleine, sans ses nuances.
+
+1. **Une seule couleur, uniforme.** Tout ce qui est encré devient un même aplat. Les
+   nuances internes, les dégradés et les secondes couleurs sont perdus.
+2. **Fond parfaitement blanc**, sans ombre portée ni dégradé. Ce qui n'est pas blanc est
    considéré comme faisant partie de l'emblème.
-2. **Couleur franche et bien visible.** Un emblème presque blanc est confondu avec le
+3. **Couleur franche et bien visible.** Un emblème presque blanc est confondu avec le
    fond ; le seuil de détection peut être abaissé, mais le résultat restera incertain.
 
-Le logiciel vérifie ces deux points sur chaque image et le dit clairement quand ils ne
-sont pas réunis, plutôt que de rendre un fichier décevant sans explication.
+Le logiciel vérifie ces points sur chaque image et le dit clairement quand ils ne sont
+pas réunis, plutôt que de rendre un fichier décevant sans explication.
 
 ## Les technologies, et pourquoi
 
