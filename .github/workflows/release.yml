@@ -1,7 +1,7 @@
 name: Paquets bureau
 
-# Produit les paquets des trois systèmes. Un paquet ne peut être fabriqué que
-# sur le système qu'il vise : c'est la raison d'être de cette matrice.
+# Builds the packages for all three systems. A package can only be built on the
+# system it targets, which is the whole reason for this matrix.
 on:
   push:
     tags: ['v*']
@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Dépendances système Linux
+      - name: Linux system dependencies
         if: matrix.os == 'ubuntu-22.04'
         run: |
           sudo apt-get update
@@ -56,7 +56,7 @@ jobs:
 
       - run: npm ci
 
-      - name: Tests du cœur de traitement
+      - name: Core processing tests
         run: npm test
 
       - uses: tauri-apps/tauri-action@v0

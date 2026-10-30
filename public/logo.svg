@@ -2,31 +2,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
   <title>Blason</title>
   <defs>
-    <linearGradient id="fond" x1="160" y1="80" x2="880" y2="970" gradientUnits="userSpaceOnUse">
+    <linearGradient id="backdrop" x1="160" y1="80" x2="880" y2="970" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#FFB45E" />
       <stop offset="0.42" stop-color="#F97E22" />
       <stop offset="1" stop-color="#D2400A" />
     </linearGradient>
-    <radialGradient id="ombre" cx="700" cy="930" r="560" gradientUnits="userSpaceOnUse">
+    <radialGradient id="shade" cx="700" cy="930" r="560" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#7A2400" stop-opacity="0.26" />
       <stop offset="1" stop-color="#7A2400" stop-opacity="0" />
     </radialGradient>
-    <filter id="pose" x="-25%" y="-25%" width="150%" height="150%">
+    <filter id="lift" x="-25%" y="-25%" width="150%" height="150%">
       <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#6B2100" flood-opacity="0.22" />
     </filter>
-    <radialGradient id="lustre" cx="400" cy="140" r="640" gradientUnits="userSpaceOnUse">
+    <radialGradient id="sheen" cx="400" cy="140" r="640" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.40" />
       <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0.07" />
       <stop offset="1" stop-color="#FFFFFF" stop-opacity="0" />
     </radialGradient>
   </defs>
 
-  <rect x="32" y="32" width="960" height="960" rx="236" fill="url(#fond)" />
-  <rect x="32" y="32" width="960" height="960" rx="236" fill="url(#ombre)" />
-  <rect x="32" y="32" width="960" height="960" rx="236" fill="url(#lustre)" />
+  <rect x="32" y="32" width="960" height="960" rx="236" fill="url(#backdrop)" />
+  <rect x="32" y="32" width="960" height="960" rx="236" fill="url(#shade)" />
+  <rect x="32" y="32" width="960" height="960" rx="236" fill="url(#sheen)" />
 
-  <!-- La mascotte : un écusson à oreilles, aux yeux évidés qui laissent voir l'orange. -->
-  <path fill="#FFFFFF" fill-rule="evenodd" filter="url(#pose)" d="
+  <!-- The mascot: an eared shield whose hollowed-out eyes let the orange show through. -->
+  <path fill="#FFFFFF" fill-rule="evenodd" filter="url(#lift)" d="
     M512,356
     C490,298 452,244 412,234
     C372,224 344,282 322,346

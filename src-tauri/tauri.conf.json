@@ -44,8 +44,8 @@
     "copyright": "Copyright (c) 2026 PANK4SS",
     "license": "MIT",
     "licenseFile": "../LICENSE",
-    "shortDescription": "Emblème vers SVG détouré",
-    "longDescription": "Blason convertit un emblème posé sur fond blanc en SVG vectoriel sans fond, entièrement sur la machine.",
+    "shortDescription": "Emblem to cut-out SVG",
+    "longDescription": "Blason converts an emblem on a white background into a background-free vector SVG, entirely on your own machine.",
     "icon": [
       "icons/32x32.png",
       "icons/64x64.png",

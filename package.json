@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Blason, convertit un emblème sur fond blanc en SVG détouré",
+  "description": "Blason converts an emblem on a white background into a cut-out SVG",
   "license": "MIT",
   "author": "PANK4SS",
   "scripts": {

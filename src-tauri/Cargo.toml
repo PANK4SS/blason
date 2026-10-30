@@ -1,7 +1,7 @@
 [package]
 name = "blason"
 version = "0.1.0"
-description = "Blason, convertit un emblème sur fond blanc en SVG détouré"
+description = "Blason converts an emblem on a white background into a cut-out SVG"
 edition = "2021"
 rust-version = "1.77"
 authors = ["PANK4SS"]

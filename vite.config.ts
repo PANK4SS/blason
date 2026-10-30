@@ -2,8 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 /**
- * Le port est figé et `strictPort` activé : Tauri pointe sur cette adresse en
- * développement et ne doit pas se retrouver sur un autre port.
+ * The port is pinned and `strictPort` is on: Tauri points at this address in
+ * development and must not end up on a different port.
  */
 export default defineConfig({
   plugins: [react()],

@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Droits de la fenêtre principale : enregistrer un SVG choisi par l'utilisateur.",
+  "description": "Rights of the main window: save an SVG to a location the user picks.",
   "windows": ["main"],
   "permissions": [
     "core:default",
