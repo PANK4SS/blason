@@ -32,10 +32,10 @@ export function Dropzone({ onFiles, compact }: DropzoneProps) {
         onDrop={handleDrop}
       >
         <span className="dropzone-title">
-          {compact ? 'Ajouter des images' : 'Déposez vos images ici'}
+          {compact ? 'Add more images' : 'Drop your images here'}
         </span>
         <span className="dropzone-hint">
-          PNG, WebP ou JPEG — ou cliquez pour choisir des fichiers
+          PNG, WebP or JPEG, or click to pick files
         </span>
       </button>
       <input

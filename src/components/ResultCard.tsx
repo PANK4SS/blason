@@ -28,9 +28,9 @@ export function ResultCard({ job, onColorChange, onRemove }: ResultCardProps) {
           type="button"
           className="button-quiet"
           onClick={() => onRemove(job.id)}
-          aria-label={`Retirer ${job.title}`}
+          aria-label={`Remove ${job.title}`}
         >
-          Retirer
+          Remove
         </button>
       </header>
 
@@ -39,20 +39,20 @@ export function ResultCard({ job, onColorChange, onRemove }: ResultCardProps) {
           <img
             className="preview-image"
             src={`data:image/svg+xml;utf8,${encodeURIComponent(result.svg)}`}
-            alt={`Vectorisation de ${job.title}`}
+            alt={`Vectorization of ${job.title}`}
           />
         ) : (
-          <img className="preview-image" src={job.previewUrl} alt={`Image d'origine de ${job.title}`} />
+          <img className="preview-image" src={job.previewUrl} alt={`Original image of ${job.title}`} />
         )}
-        {job.status === 'working' && <span className="preview-badge">Calcul…</span>}
+        {job.status === 'working' && <span className="preview-badge">Working…</span>}
       </div>
 
-      <div className="switch" role="group" aria-label="Aperçu">
+      <div className="switch" role="group" aria-label="Preview">
         <button type="button" data-active={view === 'svg'} onClick={() => setView('svg')}>
-          SVG détouré
+          Cut-out SVG
         </button>
         <button type="button" data-active={view === 'source'} onClick={() => setView('source')}>
-          Image d'origine
+          Original image
         </button>
       </div>
 
@@ -74,7 +74,7 @@ export function ResultCard({ job, onColorChange, onRemove }: ResultCardProps) {
               </dd>
             </div>
             <div>
-              <dt>Tracés</dt>
+              <dt>Paths</dt>
               <dd>{result.pathCount}</dd>
             </div>
             <div>
@@ -82,11 +82,11 @@ export function ResultCard({ job, onColorChange, onRemove }: ResultCardProps) {
               <dd>{result.pointCount}</dd>
             </div>
             <div>
-              <dt>Poids</dt>
+              <dt>Size</dt>
               <dd>{formatBytes(byteLength(result.svg))}</dd>
             </div>
             <div>
-              <dt>Calcul</dt>
+              <dt>Time</dt>
               <dd>{job.elapsedMs} ms</dd>
             </div>
           </dl>
@@ -97,13 +97,13 @@ export function ResultCard({ job, onColorChange, onRemove }: ResultCardProps) {
                 type="color"
                 value={result.color}
                 onChange={(event) => onColorChange(job.id, event.target.value.toUpperCase())}
-                aria-label="Couleur de remplissage"
+                aria-label="Fill color"
               />
               <span>{result.color}</span>
             </label>
             {job.colorOverride && (
               <button type="button" className="button-quiet" onClick={() => onColorChange(job.id, null)}>
-                Couleur d'origine
+                Original color
               </button>
             )}
             <button
@@ -112,7 +112,7 @@ export function ResultCard({ job, onColorChange, onRemove }: ResultCardProps) {
               onClick={() => void download()}
               disabled={result.pathCount === 0}
             >
-              Télécharger le SVG
+              Download SVG
             </button>
           </div>
         </>

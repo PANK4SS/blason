@@ -26,22 +26,26 @@ export default function App() {
         <div>
           <h1>Blason</h1>
           <p className="lede">
-            Transforme un emblème en image matricielle en SVG vectoriel, sans son fond.
+            Turns a raster emblem into a vector SVG, without its background.
           </p>
         </div>
       </header>
 
       {jobs.length === 0 && (
-        <section className="requirements" aria-label="Conditions pour un bon résultat">
-          <h2>Pour que ça marche</h2>
+        <section className="requirements" aria-label="Requirements for a good result">
+          <h2>What it needs to work</h2>
           <ol>
             <li>
-              L'emblème doit être sur un <strong>fond parfaitement blanc</strong>, sans ombre ni
-              dégradé.
+              The emblem must be in <strong>one single, even color</strong>. A photo, a gradient or
+              a multicolored logo comes out as a flat silhouette.
             </li>
             <li>
-              Sa couleur doit être <strong>franche et bien visible</strong> : ce qui est presque
-              blanc est pris pour du fond.
+              It must sit on a <strong>perfectly white background</strong>, with no shadow and no
+              gradient.
+            </li>
+            <li>
+              That color must be <strong>solid and clearly visible</strong>: anything close to
+              white is taken for background.
             </li>
           </ol>
         </section>
@@ -50,7 +54,7 @@ export default function App() {
       <Dropzone onFiles={(files) => void addFiles(files)} compact={jobs.length > 0} />
 
       {rejected.length > 0 && (
-        <p className="notice notice-error">Fichiers ignorés : {rejected.join(', ')}</p>
+        <p className="notice notice-error">Skipped files: {rejected.join(', ')}</p>
       )}
 
       <OptionsPanel options={options} onChange={setOptions} onReset={resetOptions} />
@@ -59,16 +63,16 @@ export default function App() {
         <div className="toolbar">
           <span className="toolbar-status">
             {jobs.length} image{jobs.length > 1 ? 's' : ''}
-            {isWorking ? ' — calcul en cours' : ''}
+            {isWorking ? ' · working' : ''}
           </span>
           <span className="toolbar-actions">
             {ready.length > 1 && (
               <button type="button" className="button" onClick={() => void downloadAll()}>
-                Tout télécharger ({ready.length})
+                Download all ({ready.length})
               </button>
             )}
             <button type="button" className="button-quiet" onClick={clear}>
-              Vider
+              Clear
             </button>
           </span>
         </div>
@@ -82,19 +86,19 @@ export default function App() {
 
       {jobs.length === 0 && (
         <p className="empty">
-          Les SVG produits ne contiennent qu'un tracé rempli, sans fond : ils se posent sur
-          n'importe quelle couleur et se redimensionnent sans perte.
+          The SVGs it produces hold nothing but a filled path, with no background: they sit on any
+          color and scale without loss.
         </p>
       )}
 
       <footer className="app-foot">
         <span>
-          Tout le traitement se fait sur votre machine. Aucune image n'est envoyée sur un serveur.
+          All processing happens on your machine. No image is ever sent to a server.
         </span>
         {ready.length > 0 && (
           <span>
-            {Math.round(ready.reduce((total, job) => total + byteLength(job.result?.svg ?? ''), 0) / 1024)} Ko de
-            SVG produits
+            {Math.round(ready.reduce((total, job) => total + byteLength(job.result?.svg ?? ''), 0) / 1024)} KB of
+            SVG produced
           </span>
         )}
       </footer>

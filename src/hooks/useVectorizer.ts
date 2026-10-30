@@ -15,11 +15,11 @@ export interface Job {
   result: VectorizeResult | null;
   error: string | null;
   elapsedMs: number;
-  /** Couleur imposée par l'utilisateur, ou null pour celle détectée. */
+  /** Color forced by the user, or null for the detected one. */
   colorOverride: string | null;
 }
 
-/** Délai d'attente avant de rejouer la vectorisation quand on règle un curseur. */
+/** How long to wait before replaying vectorization while a slider is moving. */
 const SETTLE_MS = 160;
 
 export function useVectorizer() {
@@ -40,7 +40,7 @@ export function useVectorizer() {
   useEffect(
     () => () => {
       clientRef.current?.dispose();
-      // Remis à zéro pour que le double montage de StrictMode recrée le worker.
+      // Reset so that StrictMode's double mount creates the worker again.
       clientRef.current = null;
       jobsRef.current.forEach((job) => URL.revokeObjectURL(job.previewUrl));
     },
@@ -51,7 +51,7 @@ export function useVectorizer() {
     setJobs((current) => current.map((job) => (job.id === id ? { ...job, ...changes } : job)));
   }, []);
 
-  /** Lance une vectorisation et ignore le résultat si un réglage plus récent l'a remplacée. */
+  /** Runs a vectorization and ignores the result if a newer setting has replaced it. */
   const execute = useCallback(
     async (id: string, runOptions: VectorizeOptions): Promise<void> => {
       const generation = (generationRef.current.get(id) ?? 0) + 1;
@@ -66,7 +66,7 @@ export function useVectorizer() {
         if (generationRef.current.get(id) !== generation) return;
         patch(id, {
           status: 'error',
-          error: error instanceof Error ? error.message : 'Vectorisation impossible.',
+          error: error instanceof Error ? error.message : 'Vectorization failed.',
         });
       }
     },
@@ -106,7 +106,7 @@ export function useVectorizer() {
           URL.revokeObjectURL(previewUrl);
           setRejected((current) => [
             ...current,
-            `${file.name} : ${error instanceof Error ? error.message : 'illisible'}`,
+            `${file.name}: ${error instanceof Error ? error.message : 'unreadable'}`,
           ]);
         }
       }
@@ -145,8 +145,8 @@ export function useVectorizer() {
 
   const resetOptions = useCallback((): void => setOptions(DEFAULT_OPTIONS), []);
 
-  // Un réglage modifié rejoue toutes les images, après un court répit pour ne
-  // pas lancer un calcul à chaque pixel de curseur déplacé.
+  // A changed setting replays every image, after a short pause so a slider does
+  // not start a computation for every pixel it moves.
   const firstRender = useRef(true);
   useEffect(() => {
     if (firstRender.current) {

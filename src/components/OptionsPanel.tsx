@@ -18,24 +18,24 @@ interface Control {
 const CONTROLS: Control[] = [
   {
     key: 'threshold',
-    label: 'Seuil de détection',
-    hint: 'Plus bas, les teintes claires sont captées ; plus haut, seules les couleurs franches le sont.',
+    label: 'Detection threshold',
+    hint: 'Lower picks up light shades; higher picks up only solid colors.',
     min: 5,
     max: 160,
     step: 1,
   },
   {
     key: 'upscale',
-    label: 'Finesse du tracé',
-    hint: 'Précision du contour. Au-delà de 3, le calcul est plus long pour un gain discret.',
+    label: 'Contour precision',
+    hint: 'How precise the contour is. Past 3, the computation takes longer for little gain.',
     min: 1,
     max: 4,
     step: 1,
   },
   {
     key: 'smoothing',
-    label: 'Lissage',
-    hint: 'Adoucit l’escalier des pixels. Trop fort, les angles s’arrondissent.',
+    label: 'Smoothing',
+    hint: 'Softens the pixel staircase. Too much, and the corners round off.',
     min: 0,
     max: 8,
     step: 0.2,
@@ -43,23 +43,23 @@ const CONTROLS: Control[] = [
   {
     key: 'detail',
     label: 'Simplification',
-    hint: 'Plus haut, le fichier est léger ; plus bas, le tracé colle au pixel.',
+    hint: 'Higher keeps the file small; lower makes the path hug the pixels.',
     min: 1,
     max: 20,
     step: 0.5,
   },
   {
     key: 'minArea',
-    label: 'Formes ignorées',
-    hint: 'Surface en dessous de laquelle une tache est considérée comme une poussière.',
+    label: 'Ignored shapes',
+    hint: 'Area below which a speck is treated as dust.',
     min: 0,
     max: 200,
     step: 2,
   },
   {
     key: 'padding',
-    label: 'Marge',
-    hint: 'Espace laissé autour de l’emblème dans le SVG.',
+    label: 'Padding',
+    hint: 'Space left around the emblem inside the SVG.',
     min: 0,
     max: 60,
     step: 1,
@@ -69,7 +69,7 @@ const CONTROLS: Control[] = [
 export function OptionsPanel({ options, onChange, onReset }: OptionsPanelProps) {
   return (
     <details className="panel">
-      <summary>Réglages</summary>
+      <summary>Settings</summary>
       <div className="controls">
         {CONTROLS.map((control) => (
           <label key={control.key} className="control">
@@ -92,7 +92,7 @@ export function OptionsPanel({ options, onChange, onReset }: OptionsPanelProps) 
         ))}
       </div>
       <button type="button" className="button-quiet" onClick={onReset}>
-        Revenir aux réglages par défaut
+        Back to default settings
       </button>
     </details>
   );
