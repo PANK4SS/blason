@@ -20,6 +20,7 @@
 <img alt="18 tests" src="https://img.shields.io/badge/tests-18%20au%20vert-C2410C?style=flat-square">
 <img alt="Fidélité 0.986 à 0.996" src="https://img.shields.io/badge/fid%C3%A9lit%C3%A9-0.986%20%C3%A0%200.996-C2410C?style=flat-square">
 <img alt="Traitement sans dépendance" src="https://img.shields.io/badge/traitement-sans%20d%C3%A9pendance-C2410C?style=flat-square">
+<img alt="Licence MIT" src="https://img.shields.io/badge/licence-MIT-C2410C?style=flat-square">
 </p>
 
 <img src="docs/images/interface.png" width="820" alt="L'interface, une image vectorisée">
