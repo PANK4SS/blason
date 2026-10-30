@@ -178,4 +178,8 @@ legacy/           le script Python d'origine, conservé pour mémoire
 
 ## Licence
 
-Usage interne.
+[MIT](LICENSE), copyright 2026 PANK4SS.
+
+Vous pouvez l'utiliser, le modifier, le redistribuer, le vendre et le forker, pour
+n'importe quel usage. La seule obligation est de conserver la mention de copyright et le
+texte de la licence dans les copies, afin que la source d'origine reste citée.
