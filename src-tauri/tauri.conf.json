@@ -40,6 +40,10 @@
       "dmg"
     ],
     "category": "Graphics and Design",
+    "publisher": "PANK4SS",
+    "copyright": "Copyright (c) 2026 PANK4SS",
+    "license": "MIT",
+    "licenseFile": "../LICENSE",
     "shortDescription": "Emblème vers SVG détouré",
     "longDescription": "Blason convertit un emblème posé sur fond blanc en SVG vectoriel sans fond, entièrement sur la machine.",
     "icon": [
