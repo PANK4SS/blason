@@ -21,24 +21,24 @@ fichier → décodage plateforme → RasterImage → worker → core → SVG →
 
 `src/core/vectorize.ts` enchaîne sept étapes, chacune dans son module.
 
-### 1. Champ d'encre — `field.ts`
+### 1. Champ d'encre (`field.ts`)
 
 Chaque pixel devient `255 - min(r, g, b)`, multiplié par son alpha : 0 sur du blanc, 255
 sur du noir ou une couleur saturée. Un PNG déjà détouré fonctionne donc aussi, ses zones
 transparentes comptant comme du fond.
 
-### 2. Suréchantillonnage et flou — `field.ts`
+### 2. Suréchantillonnage et flou (`field.ts`)
 
 Le champ est agrandi (bilinéaire) puis légèrement flouté. Sans cette étape, les contours
 suivent l'escalier des pixels ; avec elle, ils passent entre les pixels.
 
-### 3. Binarisation — `field.ts`
+### 3. Binarisation (`field.ts`)
 
 Le contour est placé à mi-chemin entre le seuil de détection et l'intensité réelle de
 l'emblème (`inkMagnitude`). Un seuil fixe dilaterait les emblèmes très colorés et
 éroderait les emblèmes pâles ; ce point milieu suit le bord perçu dans les deux cas.
 
-### 4. Tracé des contours — `contour.ts`
+### 4. Tracé des contours (`contour.ts`)
 
 Chaque pixel d'encre pose une arête orientée sur les côtés qui touchent le fond, dans le
 réseau des coins de pixels. Les arêtes se chaînent en boucles fermées. Le graphe étant
@@ -50,19 +50,19 @@ Les contours extérieurs tournent dans un sens, les trous dans l'autre : avec
 sommet où deux formes ne se touchent que par un coin, le virage le plus serré est
 privilégié, ce qui les sépare au lieu de les fusionner.
 
-### 5. Lissage et simplification — `polyline.ts`
+### 5. Lissage et simplification (`polyline.ts`)
 
 Lissage gaussien circulaire, puis Ramer-Douglas-Peucker : une ligne droite se réduit à
 ses extrémités, une courbe garde ce qu'il lui faut de points. Les segments trop longs
 sont redécoupés pour borner l'écart des courbes.
 
-### 6. Courbes de Bézier — `path.ts`
+### 6. Courbes de Bézier (`path.ts`)
 
 Spline Catmull-Rom **centripète** convertie en cubiques. La version uniforme déborde
 quand l'espacement des points est irrégulier, ce qui est systématique après
 simplification.
 
-### 7. Document SVG — `path.ts`
+### 7. Document SVG (`path.ts`)
 
 Un seul élément `<path>`, rempli, sans fond, sans attribut de style : le fichier se pose
 sur n'importe quelle couleur et se redimensionne sans perte.
