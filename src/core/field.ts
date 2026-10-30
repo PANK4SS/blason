@@ -1,9 +1,9 @@
 import type { BinaryMask, RasterImage, ScalarField } from './types';
 
 /**
- * Convertit l'image en « champ d'encre » : 0 sur un fond blanc, 255 sur un
- * pixel noir ou très saturé. Les pixels transparents comptent comme du fond,
- * ce qui permet d'accepter un PNG déjà détouré.
+ * Turns the image into an "ink field": 0 on a white background, 255 on a black
+ * or heavily saturated pixel. Transparent pixels count as background, which is
+ * what makes an already cut-out PNG work.
  */
 export function inkField(image: RasterImage): ScalarField {
   const { width, height, data } = image;
@@ -16,7 +16,7 @@ export function inkField(image: RasterImage): ScalarField {
   return { width, height, data: out };
 }
 
-/** Agrandit un champ par interpolation bilinéaire. */
+/** Enlarges a field by bilinear interpolation. */
 export function upscaleField(field: ScalarField, factor: number): ScalarField {
   if (factor <= 1) return field;
   const width = Math.max(1, Math.round(field.width * factor));
@@ -42,7 +42,7 @@ export function upscaleField(field: ScalarField, factor: number): ScalarField {
   return { width, height, data: out };
 }
 
-/** Flou gaussien séparable, utilisé pour adoucir l'escalier des pixels. */
+/** Separable Gaussian blur, used to soften the pixel staircase. */
 export function blurField(field: ScalarField, sigma: number): ScalarField {
   if (sigma <= 0.05) return field;
   const kernel = gaussianKernel(sigma);
@@ -75,9 +75,9 @@ export function blurField(field: ScalarField, sigma: number): ScalarField {
 }
 
 /**
- * Intensité d'encre représentative des pixels détectés (médiane). Elle sert à
- * placer le contour à mi-chemin entre le fond et l'emblème, ce qui évite de
- * dilater un emblème très coloré ou d'éroder un emblème pâle.
+ * Representative ink intensity of the detected pixels (the median). It is used
+ * to place the contour halfway between background and emblem, which avoids
+ * dilating a heavily colored emblem or eroding a pale one.
  */
 export function inkMagnitude(field: ScalarField, detectionThreshold: number): number {
   const samples: number[] = [];
@@ -90,7 +90,7 @@ export function inkMagnitude(field: ScalarField, detectionThreshold: number): nu
   return samples[samples.length >> 1];
 }
 
-/** Binarise un champ : tout ce qui dépasse le seuil devient de l'encre. */
+/** Binarizes a field: anything above the threshold becomes ink. */
 export function threshold(field: ScalarField, value: number): BinaryMask {
   const data = new Uint8Array(field.width * field.height);
   for (let i = 0; i < data.length; i += 1) data[i] = field.data[i] > value ? 1 : 0;

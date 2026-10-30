@@ -1,6 +1,6 @@
 import type { Point } from './types';
 
-/** Lissage gaussien circulaire des coordonnées d'une boucle fermée. */
+/** Circular Gaussian smoothing of a closed loop's coordinates. */
 export function smoothClosed(loop: Point[], sigma: number): Point[] {
   if (sigma <= 0.05 || loop.length < 5) return loop;
   const radius = Math.max(1, Math.ceil(sigma * 2));
@@ -29,16 +29,16 @@ export function smoothClosed(loop: Point[], sigma: number): Point[] {
 }
 
 /**
- * Simplifie une boucle fermée (Ramer-Douglas-Peucker) : seuls les points qui
- * s'écartent de plus de `epsilon` de la corde sont conservés. Une ligne droite
- * se réduit à ses deux extrémités, une courbe garde ce qu'il faut de points.
+ * Simplifies a closed loop (Ramer-Douglas-Peucker): only the points that stray
+ * further than `epsilon` from the chord are kept. A straight line collapses to
+ * its two ends, a curve keeps as many points as it needs.
  */
 export function simplifyClosed(loop: Point[], epsilon: number): Point[] {
   const n = loop.length;
   if (n < 5 || epsilon <= 0) return loop;
 
-  // Deux ancres diamétralement opposées coupent la boucle en deux chaînes
-  // ouvertes, que l'algorithme classique sait traiter.
+  // Two diametrically opposed anchors cut the loop into two open chains, which
+  // the classic algorithm knows how to handle.
   let far = 0;
   let best = -1;
   for (let i = 1; i < n; i += 1) {
@@ -55,7 +55,7 @@ export function simplifyClosed(loop: Point[], epsilon: number): Point[] {
   return merged.length >= 4 ? merged : loop;
 }
 
-/** Découpe les segments trop longs, pour borner l'écart des courbes de Bézier. */
+/** Splits overly long segments, to bound how far the Bezier curves stray. */
 export function subdivideClosed(loop: Point[], maxLength: number): Point[] {
   if (maxLength <= 0 || loop.length < 3) return loop;
   const out: Point[] = [];
@@ -72,7 +72,7 @@ export function subdivideClosed(loop: Point[], maxLength: number): Point[] {
   return out;
 }
 
-/** Translate puis divise les coordonnées (retour à l'échelle source). */
+/** Translates then divides the coordinates (back to the source scale). */
 export function transform(loop: Point[], offsetX: number, offsetY: number, scale: number): Point[] {
   return loop.map((p) => ({ x: (p.x - offsetX) / scale, y: (p.y - offsetY) / scale }));
 }

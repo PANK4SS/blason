@@ -1,10 +1,10 @@
 import type { Point } from './types';
 
 /**
- * Convertit une boucle fermée en courbes de Bézier cubiques via une spline
- * Catmull-Rom centripète : la courbe passe par tous les points d'origine et,
- * contrairement à la version uniforme, ne déborde pas quand l'espacement des
- * points est irrégulier (fréquent après simplification).
+ * Converts a closed loop into cubic Bezier curves through a centripetal
+ * Catmull-Rom spline: the curve passes through every original point and,
+ * unlike the uniform variant, does not overshoot when the point spacing is
+ * irregular (which is common after simplification).
  */
 export function closedBezierPath(loop: Point[], precision = 2, alpha = 0.5): string {
   const n = loop.length;
@@ -23,14 +23,14 @@ export function closedBezierPath(loop: Point[], precision = 2, alpha = 0.5): str
   return `${d}Z`;
 }
 
-/** Points de contrôle du segment p1-p2 d'une spline Catmull-Rom non uniforme. */
+/** Control points of the p1-p2 segment of a non-uniform Catmull-Rom spline. */
 function controlPoints(p0: Point, p1: Point, p2: Point, p3: Point, alpha: number): [Point, Point] {
   const d1 = Math.pow(Math.hypot(p1.x - p0.x, p1.y - p0.y), alpha);
   const d2 = Math.pow(Math.hypot(p2.x - p1.x, p2.y - p1.y), alpha);
   const d3 = Math.pow(Math.hypot(p3.x - p2.x, p3.y - p2.y), alpha);
 
-  // Espacement dégénéré (points confondus) : on retombe sur la tangente
-  // uniforme, qui ne divise par aucune distance.
+  // Degenerate spacing (coincident points): fall back to the uniform tangent,
+  // which divides by no distance at all.
   const scale = d1 + d2 + d3;
   if (!(d1 > 1e-9 * scale) || !(d2 > 1e-9 * scale) || !(d3 > 1e-9 * scale)) {
     return [
@@ -61,7 +61,7 @@ export interface SvgDocumentInput {
   title?: string;
 }
 
-/** Assemble le document SVG final : un seul tracé, aucun fond. */
+/** Assembles the final SVG document: a single path, no background. */
 export function buildSvgDocument({ paths, width, height, color, title }: SvgDocumentInput): string {
   const w = Number(width.toFixed(2));
   const h = Number(height.toFixed(2));

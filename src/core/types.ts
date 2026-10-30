@@ -1,19 +1,19 @@
-/** Image RGBA brute, indépendante du DOM (compatible ImageData). */
+/** Raw RGBA image, independent of the DOM (compatible with ImageData). */
 export interface RasterImage {
   readonly width: number;
   readonly height: number;
-  /** 4 octets par pixel, RGBA non prémultiplié. */
+  /** 4 bytes per pixel, non-premultiplied RGBA. */
   readonly data: Uint8ClampedArray;
 }
 
-/** Champ scalaire monocanal en virgule flottante. */
+/** Single-channel floating point scalar field. */
 export interface ScalarField {
   readonly width: number;
   readonly height: number;
   readonly data: Float32Array;
 }
 
-/** Masque binaire, 1 = encre (emblème), 0 = fond. */
+/** Binary mask, 1 = ink (the emblem), 0 = background. */
 export interface BinaryMask {
   readonly width: number;
   readonly height: number;
@@ -33,19 +33,19 @@ export interface Box {
 }
 
 export interface VectorizeOptions {
-  /** Seuil de détection de l'encre, 0-255. Plus bas = capte les teintes claires. */
+  /** Ink detection threshold, 0-255. Lower picks up lighter shades. */
   threshold: number;
-  /** Suréchantillonnage avant tracé des contours, 1-4. Plus haut = contours plus fins. */
+  /** Upsampling applied before contour tracing, 1-4. Higher gives finer contours. */
   upscale: number;
-  /** Lissage des contours, en pixels suréchantillonnés. */
+  /** Contour smoothing, in upsampled pixels. */
   smoothing: number;
-  /** Espacement des points de contrôle, en pixels suréchantillonnés. Plus haut = moins de points. */
+  /** Control point spacing, in upsampled pixels. Higher gives fewer points. */
   detail: number;
-  /** Surface minimale d'une forme conservée, en pixels source. */
+  /** Minimum area of a shape that is kept, in source pixels. */
   minArea: number;
-  /** Marge laissée autour de l'emblème, en pixels source. */
+  /** Padding left around the emblem, in source pixels. */
   padding: number;
-  /** Couleur de remplissage imposée (#RRGGBB), ou null pour détecter celle de l'image. */
+  /** Forced fill color (#RRGGBB), or null to detect the one in the image. */
   color: string | null;
 }
 
@@ -69,9 +69,9 @@ export interface Diagnostic {
 
 export interface VectorizeResult {
   svg: string;
-  /** Couleur effectivement utilisée pour le remplissage. */
+  /** The color actually used for the fill. */
   color: string;
-  /** Cadre de l'emblème dans l'image source. */
+  /** Bounding box of the emblem in the source image. */
   bounds: Box;
   pathCount: number;
   pointCount: number;

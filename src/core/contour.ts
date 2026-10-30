@@ -1,17 +1,17 @@
 import type { BinaryMask, Box, Point } from './types';
 
 /**
- * Extrait les contours fermés d'un masque binaire.
+ * Extracts the closed contours of a binary mask.
  *
- * Chaque pixel d'encre pose, sur les côtés qui touchent le fond, une arête
- * orientée du réseau de sommets (coins de pixels). Les arêtes se chaînent
- * ensuite en boucles : contours extérieurs dans un sens, trous dans l'autre,
- * ce qui rend les trous corrects avec `fill-rule="evenodd"`.
+ * On every side that touches the background, an ink pixel lays down a directed
+ * edge of the vertex lattice (the pixel corners). The edges then chain into
+ * loops: outer contours wind one way, holes the other, which makes the holes
+ * come out right under `fill-rule="evenodd"`.
  */
 export function traceContours(mask: BinaryMask): Point[][] {
   const { width, height, data } = mask;
   const stride = width + 1;
-  /** Pour chaque sommet de départ, les sommets d'arrivée des arêtes sortantes. */
+  /** For each start vertex, the end vertices of its outgoing edges. */
   const edges = new Map<number, number[]>();
 
   const addEdge = (ax: number, ay: number, bx: number, by: number): void => {
@@ -46,10 +46,10 @@ export function traceContours(mask: BinaryMask): Point[][] {
 }
 
 /**
- * Suit les arêtes depuis `start` jusqu'au retour au point de départ, en
- * consommant chaque arête au passage. Sur un sommet en diagonale, deux arêtes
- * sortent : on privilégie le virage le plus serré, ce qui sépare proprement
- * deux formes qui ne se touchent que par un coin.
+ * Walks the edges from `start` until it returns to the starting point,
+ * consuming each edge on the way. Two edges leave a diagonal vertex: the
+ * tightest turn wins, which cleanly separates two shapes that only meet at a
+ * corner.
  */
 function walkLoop(edges: Map<number, number[]>, start: number, stride: number): Point[] {
   const loop: Point[] = [];
@@ -83,8 +83,8 @@ function pickTightestTurn(
   stride: number,
 ): number {
   if (!direction) return 0;
-  // Les boucles tournent dans le sens horaire (axe y vers le bas) : le virage
-  // à droite est donc le plus serré, puis tout droit, puis à gauche.
+  // Loops wind clockwise (y axis pointing down), so the tightest turn is the
+  // one to the right, then straight ahead, then left.
   const preference = [
     { x: -direction.y, y: direction.x },
     { x: direction.x, y: direction.y },
@@ -100,7 +100,7 @@ function pickTightestTurn(
   return 0;
 }
 
-/** Surface algébrique d'une boucle (formule du lacet), signe selon le sens. */
+/** Signed area of a loop (shoelace formula); the sign follows the winding. */
 export function signedArea(loop: Point[]): number {
   let sum = 0;
   for (let i = 0; i < loop.length; i += 1) {
@@ -111,7 +111,7 @@ export function signedArea(loop: Point[]): number {
   return sum / 2;
 }
 
-/** Cadre englobant les pixels d'encre, ou null si le masque est vide. */
+/** Bounding box of the ink pixels, or null if the mask is empty. */
 export function inkBounds(mask: BinaryMask): Box | null {
   const { width, height, data } = mask;
   let minX = width;
