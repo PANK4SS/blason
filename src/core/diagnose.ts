@@ -2,9 +2,9 @@ import { luminance, type Rgb } from './color';
 import type { BinaryMask, Diagnostic, RasterImage } from './types';
 
 /**
- * Contrôle les deux conditions annoncées à l'utilisateur : un fond vraiment
- * blanc et un emblème d'une couleur franche. Les diagnostics expliquent un
- * résultat décevant au lieu de laisser croire à un bug.
+ * Checks the conditions the user was told about: a truly white background and
+ * an emblem in one solid color. The diagnostics explain a disappointing result
+ * instead of letting it look like a bug.
  */
 export function diagnose(
   image: RasterImage,
@@ -21,7 +21,7 @@ export function diagnose(
       level: 'error',
       code: 'nothing-detected',
       message:
-        "Aucune forme détectée. L'emblème est peut-être trop clair : baissez le seuil de détection.",
+        'No shape detected. The emblem may be too light: lower the detection threshold.',
     });
     return diagnostics;
   }
@@ -32,7 +32,7 @@ export function diagnose(
       level: 'warning',
       code: 'background-not-white',
       message:
-        'Le fond ne semble pas blanc. Sur un fond coloré ou texturé, le détourage emportera aussi le fond.',
+        'The background does not look white. On a colored or textured background, the cutout will take the background with it.',
     });
   }
 
@@ -41,7 +41,7 @@ export function diagnose(
       level: 'warning',
       code: 'touches-border',
       message:
-        "L'emblème touche le bord de l'image. Laissez une marge blanche autour pour un contour fermé.",
+        'The emblem touches the edge of the image. Leave a white margin around it to get a closed contour.',
     });
   }
 
@@ -50,7 +50,7 @@ export function diagnose(
       level: 'warning',
       code: 'color-too-light',
       message:
-        'La couleur de l’emblème est très claire, donc difficile à distinguer du blanc. Le tracé peut être incomplet.',
+        'The emblem color is very light, so it is hard to tell apart from white. The traced path may be incomplete.',
     });
   }
 
@@ -63,7 +63,7 @@ function countInk(mask: BinaryMask): number {
   return count;
 }
 
-/** Médiane de l'encre sur un liseré de 2 pixels : l'état réel du fond. */
+/** Median ink over a 2 pixel border band: the real state of the background. */
 function borderMedianInk(image: RasterImage): number {
   const { width, height, data } = image;
   const band = 2;

@@ -7,13 +7,13 @@ export interface Rgb {
 }
 
 /**
- * Couleur dominante de l'emblème : médiane par canal des pixels franchement
- * encrés. La médiane ignore les pixels d'anti-aliasing délavés qui tireraient
- * une moyenne vers le blanc.
+ * Dominant color of the emblem: the per-channel median of the solidly inked
+ * pixels. The median ignores washed-out anti-aliasing pixels, which would drag
+ * an average towards white.
  *
- * Un emblème dans un ton très pâle n'a aucun pixel « franc » : on reprend
- * alors la mesure au seuil de détection, pour rendre sa vraie couleur plutôt
- * que rien.
+ * An emblem in a very pale tone has no "solid" pixel at all, so the
+ * measurement is taken again at the detection threshold, to return its real
+ * color rather than nothing.
  */
 export function dominantColor(image: RasterImage, inkThreshold: number): Rgb | null {
   const strong = Math.max(inkThreshold * 2, 90);
@@ -43,7 +43,7 @@ export function toHex({ r, g, b }: Rgb): string {
   return `#${part(r)}${part(g)}${part(b)}`.toUpperCase();
 }
 
-/** Luminance relative perçue, 0 (noir) à 255 (blanc). */
+/** Perceived relative luminance, 0 (black) to 255 (white). */
 export function luminance({ r, g, b }: Rgb): number {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }

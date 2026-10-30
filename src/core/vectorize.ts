@@ -7,14 +7,14 @@ import { simplifyClosed, smoothClosed, subdivideClosed, transform } from './poly
 import { DEFAULT_OPTIONS, type RasterImage, type VectorizeOptions, type VectorizeResult } from './types';
 
 /**
- * Pipeline complet : image raster sur fond blanc vers SVG détouré.
+ * The full pipeline: a raster image on a white background to a cut-out SVG.
  *
- * 1. champ d'encre (distance au blanc)  2. suréchantillonnage et flou
- * 3. binarisation  4. tracé des contours  5. lissage et rééchantillonnage
- * 6. courbes de Bézier  7. document SVG.
+ * 1. ink field (distance from white)  2. upsampling and blur
+ * 3. binarization  4. contour tracing  5. smoothing and resampling
+ * 6. Bezier curves  7. SVG document.
  *
- * Fonction pure, sans aucune dépendance au DOM : elle tourne aussi bien dans
- * un Web Worker que dans un test Node.
+ * A pure function with no dependency on the DOM: it runs just as well in a Web
+ * Worker as in a Node test.
  */
 export function vectorize(
   image: RasterImage,
@@ -24,8 +24,8 @@ export function vectorize(
   const options = normalize({ ...DEFAULT_OPTIONS, ...overrides });
 
   const source = inkField(image);
-  // Le contour est placé à mi-chemin entre le seuil de détection et
-  // l'intensité réelle de l'emblème : le tracé suit le bord perçu.
+  // The contour sits halfway between the detection threshold and the real
+  // intensity of the emblem, so the path follows the perceived edge.
   const boundary = (options.threshold + inkMagnitude(source, options.threshold)) / 2;
   const scaled = upscaleField(source, options.upscale);
   const softened = blurField(scaled, 0.45 * options.upscale);
